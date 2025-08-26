@@ -64,7 +64,7 @@ export const useAuth = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "https://signature.fv.cx",
+        redirectTo: process.env.NEXT_PUBLIC_URL,
       },
     });
     if (error) {
