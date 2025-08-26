@@ -35,7 +35,7 @@ export default function SignaturePage({
     );
   }
 
-  const signatureImageUrl = `https://signature.cnrad.dev/api/signature-image/${signature.name}`;
+  const signatureImageUrl = `${process.env.NEXT_PUBLIC_URL}/api/signature-image/${signature.name}`;
 
   return (
     <>
@@ -50,7 +50,7 @@ export default function SignaturePage({
         <meta property="og:type" content="website" />
         <meta
           property="og:url"
-          content={`https://signature.cnrad.dev/${signature.name.toLowerCase()}`}
+          content={`${process.env.NEXT_PUBLIC_URL}/${signature.name.toLowerCase()}`}
         />
         <meta
           property="og:title"
@@ -71,7 +71,7 @@ export default function SignaturePage({
         <meta property="twitter:card" content="summary_large_image" />
         <meta
           property="twitter:url"
-          content={`https://signature.cnrad.dev/${signature.name.toLowerCase()}`}
+          content={`${process.env.NEXT_PUBLIC_URL}/${signature.name.toLowerCase()}`}
         />
         <meta
           property="twitter:title"
@@ -147,7 +147,7 @@ export default function SignaturePage({
           </Link>
           <button
             onClick={() => {
-              const tweetText = `Check out this digital signature for "${signature.name}"!\n\n#DigitalSignature\n\nhttps://signature.cnrad.dev/${signature.name.toLowerCase()}`;
+              const tweetText = `Check out this digital signature for "${signature.name}"!\n\n#DigitalSignature\n\n${process.env.NEXT_PUBLIC_URL}/${signature.name.toLowerCase()}`;
               const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
               window.open(twitterUrl, "_blank");
             }}

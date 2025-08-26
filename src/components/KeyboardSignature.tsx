@@ -21,7 +21,7 @@ import {
   useUnclaimSignature,
 } from "@/hooks/useSignaturesQuery";
 import { useDebounce } from "@/hooks/useDebounce";
-import { XIcon } from "./XIcon";
+import { GithubIcon } from "./GithubIcon";
 
 const DEFAULT_STROKE_CONFIG = {
   style: StrokeStyle.SOLID,
@@ -55,7 +55,7 @@ export const KeyboardSignature = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [claimError, setClaimError] = useState<string | null>(null);
 
-  const { user, signInWithTwitter, signOut } = useAuth();
+  const { user, signInWithGithub, signOut } = useAuth();
   const claimSignatureMutation = useClaimSignature();
   const unclaimSignatureMutation = useUnclaimSignature();
   const { data: existingSignature } = useSignatureByName(debouncedName); // API call debounced
@@ -170,7 +170,7 @@ export const KeyboardSignature = () => {
   }, [name, currentKeyboardLayout, includeNumbers]); // Use name directly
 
   const handleLogin = async () => {
-    await signInWithTwitter();
+    await signInWithGithub();
   };
 
   const handleLogout = async () => {
@@ -559,8 +559,8 @@ export const KeyboardSignature = () => {
             onClick={handleLogin}
             className="whitespace-nowrap text-white flex flex-row items-center gap-2 font-semibold cursor-pointer hover:bg-neutral-950 rounded-full bg-black border border-neutral-800/75 px-4 py-2 opacity-75 hover:opacity-100 duration-150 ease-out transition-opacity"
           >
-            <XIcon width={20} height={20} className="fill-white" />
-            Connect with X
+            <GithubIcon width={20} height={20} className="fill-white" />
+            Connect with Github
           </button>
         ) : (
           <div className="relative">
@@ -762,15 +762,6 @@ export const KeyboardSignature = () => {
             Export PNG
           </button>
         </div>
-
-        <a
-          href="https://github.com/cnrad/keyboard-signature"
-          target="_blank"
-          rel="noreferrer noopener"
-          className="font-medium text-neutral-500 border border-neutral-700/50 px-3.5 py-1.5 bg-neutral-900/50 text-sm rounded-md text-center active:scale-98 active:brightness-70 hover:brightness-85 transition-all duration-100 ease-out"
-        >
-          View on GitHub
-        </a>
       </div>
 
       <a

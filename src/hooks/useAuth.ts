@@ -60,11 +60,11 @@ export const useAuth = () => {
     };
   };
 
-  const signInWithTwitter = async () => {
+  const signInWithGithub = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-      provider: "twitter",
+      provider: "github",
       options: {
-        redirectTo: "https://signature.cnrad.dev",
+        redirectTo: "https://signature.fv.cx",
       },
     });
     if (error) {
@@ -82,7 +82,7 @@ export const useAuth = () => {
   return {
     user,
     isLoading,
-    signInWithTwitter,
+    signInWithGithub,
     signOut,
   };
 };
