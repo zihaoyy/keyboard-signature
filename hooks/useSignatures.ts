@@ -5,7 +5,7 @@ import {
   getUserClaimedSignaturesAction,
   getSignatureByNameAction,
 } from "@/lib/actions";
-import { StrokeConfig } from "@/util/constants";
+import { StrokeConfig } from "@/utils/constants";
 
 export interface ClaimedSignature {
   id: string;

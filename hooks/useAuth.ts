@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
-import { User } from "@supabase/supabase-js";
+import {useState, useEffect} from "react";
+import {User} from "@supabase/supabase-js";
+import {createSupabaseBrowserClient} from "@/utils/supabase/client";
 
 export interface AuthUser {
   id: string;
@@ -12,12 +12,13 @@ export interface AuthUser {
 export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const supabase = createSupabaseBrowserClient();
 
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
       const {
-        data: { session },
+        data: {session},
       } = await supabase.auth.getSession();
       if (session?.user) {
         setUser(formatUser(session.user));
@@ -29,7 +30,7 @@ export const useAuth = () => {
 
     // Listen for auth changes
     const {
-      data: { subscription },
+      data: {subscription},
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
         setUser(formatUser(session.user));
@@ -61,7 +62,7 @@ export const useAuth = () => {
   };
 
   const signInWithGithub = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const {error} = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
         redirectTo: process.env.NEXT_PUBLIC_URL,
@@ -73,7 +74,7 @@ export const useAuth = () => {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    const {error} = await supabase.auth.signOut();
     if (error) {
       console.error("Error signing out:", error.message);
     }

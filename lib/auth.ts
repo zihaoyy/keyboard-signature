@@ -1,64 +1,11 @@
-import { createServerClient } from "@supabase/ssr";
-import { createClient } from "@supabase/supabase-js";
-import { parse, serialize } from "cookie";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import {NextResponse} from "next/server";
+import {createSupabaseServerClient} from "@/utils/supabase/server";
 
-// Client for server-side operations with service role (full access)
-export function createServiceSupabaseClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!, // Service role key - NEVER expose to client
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    }
-  );
-}
-
-// Client for API routes with user context (limited access)
-export async function createServerSupabaseClient(
-  req: NextRequest,
-  res: NextResponse
-) {
-  if (!req || !res) {
-    throw new Error(
-      "Request and response objects are required for server-side auth"
-    );
-  }
-  console.log(req, "reqreqreq");
-
-  const cookieStore = await cookies();
-
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          const names = cookieStore.get(name);
-          console.log(names, "names");
-
-          return names;
-        },
-        set(name: string, value: string, options: Record<string, unknown>) {
-          cookieStore.set(name, value, options);
-        },
-        remove(name: string, options: Record<string, unknown>) {
-          cookieStore.set(name, "", options);
-        },
-      },
-    }
-  );
-}
-
-export async function getServerUser(req: NextRequest, res: NextResponse) {
-  const supabase = await createServerSupabaseClient(req, res);
+export async function getServerUser(request: Request) {
+  const supabase = await createSupabaseServerClient(request);
 
   const {
-    data: { user },
+    data: {user},
     error,
   } = await supabase.auth.getUser();
 
@@ -82,11 +29,11 @@ export async function getServerUser(req: NextRequest, res: NextResponse) {
   };
 }
 
-export async function requireAuth(req: NextRequest, res: NextResponse) {
-  const user = await getServerUser(req, res);
+export async function requireAuth(request: Request) {
+  const user = await getServerUser(request);
 
   if (!user) {
-    return new Response("Unauthorized", { status: 401 });
+    return NextResponse.json({error: "Unauthorized"}, {status: 401});
   }
 
   return user;

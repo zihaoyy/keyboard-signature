@@ -6,7 +6,7 @@ import {
   getUserClaimedSignaturesAction,
   unclaimSignatureAction,
 } from "@/lib/actions";
-import { StrokeConfig } from "@/util/constants";
+import { StrokeConfig } from "@/utils/constants";
 import type { ClaimedSignature } from "@/hooks/useSignatures";
 import { UnclaimSignatureParams } from "@/app/api/signatures/unclaim/route";
 

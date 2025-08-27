@@ -1,39 +1,41 @@
-import { createServiceSupabaseClient } from "@/lib/auth";
-import { NextRequest } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
+import {createSupabaseServiceClient} from "@/utils/supabase/server";
 
-export async function GET(req: NextRequest) {
+interface SignatureImageProps {
+  params: Promise<{ name: string }>
+}
+
+export async function GET(req: NextRequest, {params}: SignatureImageProps) {
   try {
-    const { name: originName } = await req.json();
+    const {name: originName} = await params;
     const name = decodeURIComponent(originName as string);
 
-    if (!name || typeof name !== "string") {
-      return new Response("Invalid signature name", { status: 400 });
+    if (!name) {
+      return NextResponse.json({error: "Invalid signature name"}, {status: 400});
     }
 
-    console.log(name);
-
     // Use service role client for database operations
-    const serviceClient = createServiceSupabaseClient();
+    const serviceClient = createSupabaseServiceClient();
 
-    const { data, error } = await serviceClient
-      .from("claimed_signatures")
-      .select("*")
-      .eq("name", name.toUpperCase())
-      .limit(1)
-      .maybeSingle();
+    const {data, error} = await serviceClient
+    .from("claimed_signatures")
+    .select("*")
+    .eq("name", name.toUpperCase())
+    .limit(1)
+    .maybeSingle();
 
     if (error && error.code !== "PGRST116") {
       console.error("Error fetching signature:", error);
-      return new Response("Failed to fetch signature", { status: 500 });
+      return NextResponse.json({error: "Failed to fetch signature"}, {status: 500});
     }
 
     if (!data) {
-      return new Response("Signature not found", { status: 404 });
+      NextResponse.json({error: "Signature not found"}, {status: 404});
     }
 
     return Response.json(data);
   } catch (error) {
     console.error("Error fetching signature:", error);
-    return new Response("Internal server error", { status: 500 });
+    NextResponse.json({error: "Internal server error"}, {status: 500});
   }
 }
