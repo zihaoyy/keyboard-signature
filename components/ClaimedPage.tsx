@@ -1,16 +1,17 @@
-import { motion } from "motion/react";
-import { useUserClaimedSignatures } from "@/hooks/useSignaturesQuery";
-import type { ClaimedSignature } from "@/hooks/useSignatures";
-import { handleTweet } from "@/lib/tweet";
-import { XIcon } from "./XIcon";
+import {motion} from "motion/react";
+import {useUserClaimedSignatures} from "@/hooks/useSignaturesQuery";
+import type {ClaimedSignature} from "@/hooks/useSignatures";
+import {getTweetUrl} from "@/lib/tweet";
+import {XIcon} from "./XIcon";
+import Link from "next/link";
 
 interface ClaimedPageProps {
   onBack: () => void;
   user: { id: string; username: string; profilePic: string } | null;
 }
 
-export const ClaimedPage = ({ onBack, user }: ClaimedPageProps) => {
-  const { data: userClaimedSignatures = [] } = useUserClaimedSignatures();
+export const ClaimedPage = ({onBack, user}: ClaimedPageProps) => {
+  const {data: userClaimedSignatures = []} = useUserClaimedSignatures();
 
   const downloadSignature = (signature: ClaimedSignature) => {
     const height = signature.include_numbers ? 260 : 200;
@@ -52,10 +53,10 @@ export const ClaimedPage = ({ onBack, user }: ClaimedPageProps) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      transition={{ duration: 0.3, ease: [0.6, 1, 0.26, 1] }}
+      initial={{opacity: 0, y: 20}}
+      animate={{opacity: 1, y: 0}}
+      exit={{opacity: 0, y: 20}}
+      transition={{duration: 0.3, ease: [0.6, 1, 0.26, 1]}}
       className="w-full max-w-4xl mx-auto px-4 flex flex-col justify-start h-full"
     >
       <div className="flex max-sm:flex-col max-sm:items-start items-center justify-between mb-8">
@@ -72,7 +73,7 @@ export const ClaimedPage = ({ onBack, user }: ClaimedPageProps) => {
               fill="currentColor"
               aria-hidden="true"
             >
-              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z" />
+              <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.42-1.41L7.83 13H20v-2z"/>
             </svg>
             Back
           </button>
@@ -96,9 +97,9 @@ export const ClaimedPage = ({ onBack, user }: ClaimedPageProps) => {
           userClaimedSignatures.map((signature, index) => (
             <motion.div
               key={signature.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.2, delay: index * 0.1 }}
+              initial={{opacity: 0, x: -20}}
+              animate={{opacity: 1, x: 0}}
+              transition={{duration: 0.2, delay: index * 0.1}}
               className="bg-neutral-900/50 border border-neutral-700/50 rounded-xl p-6 transition-colors duration-200"
             >
               <div className="flex max-sm:flex-col items-center justify-between">
@@ -160,14 +161,13 @@ export const ClaimedPage = ({ onBack, user }: ClaimedPageProps) => {
                 </div>
 
                 <div className=" max-sm:mt-4 flex items-center gap-2 max-sm:w-full">
-                  <button
-                    type="button"
-                    onClick={() => handleTweet(signature.name)}
+                  <Link
+                    href={getTweetUrl(signature.name)}
                     className="cursor-pointer bg-neutral-950 hover:bg-neutral-900 border border-neutral-800 text-white font-semibold px-4 py-2 rounded-md text-sm transition-all duration-100 max-sm:w-full flex items-center justify-center gap-2"
                   >
-                    <XIcon className="size-4 fill-white" />
+                    <XIcon className="size-4 fill-white"/>
                     Share on X
-                  </button>
+                  </Link>
 
                   <button
                     onClick={() => downloadSignature(signature)}
@@ -182,9 +182,9 @@ export const ClaimedPage = ({ onBack, user }: ClaimedPageProps) => {
           ))
         ) : (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.3, delay: 0.2}}
             className="text-center py-12"
           >
             <h3 className="text-lg font-medium text-white mb-2">

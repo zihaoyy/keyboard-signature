@@ -8,7 +8,7 @@ import {
   getKeyboardLayout,
   StrokeStyle,
   StrokeConfig,
-} from "@/util/constants";
+} from "@/utils/constants";
 import { AnimatePresence, motion } from "motion/react";
 import { ColorPicker } from "@/components/ColorPicker";
 import { ClaimedPage } from "@/components/ClaimedPage";

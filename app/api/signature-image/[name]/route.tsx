@@ -1,38 +1,39 @@
-import { getSignatureByNameAction } from "@/lib/actions";
-import { ImageResponse } from "@vercel/og";
-import { NextRequest } from "next/server";
+import {getSignatureByNameAction} from "@/lib/actions";
+import {ImageResponse} from "@vercel/og";
+import {NextResponse} from "next/server";
 
 export const runtime = "edge";
 
-export default async function page(req: NextRequest) {
+interface SignatureImageProps {
+  params: Promise<{ name: string }>
+}
+
+export async function GET(request: Request, {params}: SignatureImageProps) {
   try {
-    const url = new URL(req.url);
-    const name = url.pathname.split("/").pop();
+    const name = (await params).name;
 
     // Validate and sanitize input
-    if (!name || typeof name !== "string") {
-      return new Response(JSON.stringify({ error: "Invalid signature name" }), {
+    if (!name) {
+      return NextResponse.json({error: "Invalid signature name"}, {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
       });
     }
-
     // Sanitize name - only allow alphanumeric characters and spaces
     const sanitizedName = name.replace(/[^a-zA-Z0-9\s]/g, "").trim();
     if (!sanitizedName) {
-      return new Response(JSON.stringify({ error: "Invalid signature name" }), {
+      return NextResponse.json({error: "Invalid signature name"}, {
         status: 400,
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
       });
     }
 
     // Get signature data
     const signature = await getSignatureByNameAction(sanitizedName);
-
     if (!signature) {
-      return new Response(JSON.stringify({ error: "Signature not found" }), {
+      return NextResponse.json({error: "Signature not found"}, {
         status: 404,
-        headers: { "Content-Type": "application/json" },
+        headers: {"Content-Type": "application/json"},
       });
     }
 
@@ -58,7 +59,7 @@ export default async function page(req: NextRequest) {
             xmlns="http://www.w3.org/2000/svg"
           >
             <title>Signature for {sanitizedName}</title>
-            <rect width="650" height={height.toString()} fill="#000000" />
+            <rect width="650" height={height.toString()} fill="#000000"/>
             {signature.stroke_config.style === "gradient" && (
               <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -97,9 +98,9 @@ export default async function page(req: NextRequest) {
     );
   } catch (error) {
     console.error("Error generating signature image:", error);
-    return new Response(JSON.stringify({ error: "Failed to generate image" }), {
+    return NextResponse.json({error: "Failed to generate image"}, {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: {"Content-Type": "application/json"},
     });
   }
 }

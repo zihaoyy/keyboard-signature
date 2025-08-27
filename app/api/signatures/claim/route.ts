@@ -1,9 +1,6 @@
-import {
-  createServerSupabaseClient,
-  createServiceSupabaseClient,
-} from "@/lib/auth";
-import { StrokeConfig } from "@/util/constants";
-import { NextRequest, NextResponse } from "next/server";
+import {StrokeConfig} from "@/utils/constants";
+import {createSupabaseServerClient, createSupabaseServiceClient} from "@/utils/supabase/server";
+import {NextResponse} from "next/server";
 
 export interface ClaimSignatureParams {
   name: string;
@@ -12,68 +9,65 @@ export interface ClaimSignatureParams {
   includeNumbers: boolean;
 }
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(request: Request) {
   try {
-    const { name, signaturePath, strokeConfig, includeNumbers } =
-      (await req.json()) as ClaimSignatureParams;
-
+    const {name, signaturePath, strokeConfig, includeNumbers} =
+      (await request.json()) as ClaimSignatureParams;
     // Validate input
     if (!name || !signaturePath || !strokeConfig) {
-      return new Response("Missing required parameters", { status: 400 });
+      return NextResponse.json({error: "Missing required parameters"}, {status: 400});
     }
 
     // Sanitize name - only allow alphanumeric characters and spaces
     const sanitizedName = name.replace(/[^a-zA-Z0-9\s]/g, "").trim();
     if (!sanitizedName) {
-      return new Response("Invalid signature name", { status: 400 });
+      return NextResponse.json({error: "Invalid signature name"}, {status: 400});
     }
-
     // First, authenticate the user using the client-side client
-    const userClient = await createServerSupabaseClient(req, res);
+    const userClient = await createSupabaseServerClient(request);
     const {
-      data: { user },
+      data: {user},
       error: authError,
     } = await userClient.auth.getUser();
 
     if (authError || !user) {
-      return new Response("Unauthorized", { status: 401 });
+      return NextResponse.json({error: "Unauthorized"}, {status: 401});
     }
-
     // Use service role client for database operations (bypasses RLS)
-    const serviceClient = createServiceSupabaseClient();
+    const serviceClient = createSupabaseServiceClient();
 
     // Check if signature is already claimed
-    const { data: existingClaim, error: checkError } = await serviceClient
-      .from("claimed_signatures")
-      .select("*")
-      .eq("name", sanitizedName.toUpperCase())
-      .limit(1)
-      .maybeSingle();
+    const {data: existingClaim, error: checkError} = await serviceClient
+    .from("claimed_signatures")
+    .select("*")
+    .eq("name", sanitizedName.toUpperCase())
+    .limit(1)
+    .maybeSingle();
 
     if (checkError) {
-      return new Response("Failed to check existing claims", { status: 500 });
+      return NextResponse.json({error: "Failed to check existing claims"}, {status: 500});
     }
 
     if (existingClaim) {
-      return new Response("signature_already_claimed", { status: 409 });
+      return NextResponse.json({error: "signature_already_claimed"}, {status: 409});
     }
 
     // Check if user already has a claimed signature (one per account limit)
-    const { data: userExistingClaim, error: userCheckError } =
+    const {data: userExistingClaim, error: userCheckError} =
       await serviceClient
-        .from("claimed_signatures")
-        .select("*")
-        .eq("claimed_by_user_id", user.id)
-        .limit(1)
-        .maybeSingle();
+      .from("claimed_signatures")
+      .select("*")
+      .eq("claimed_by_user_id", user.id)
+      .limit(1)
+      .maybeSingle();
 
     if (userCheckError) {
-      return new Response("Failed to check user claims", { status: 500 });
+      return NextResponse.json({error: "Failed to check user claims"}, {status: 500});
     }
 
     // i (conrad) get two signatures because one is for my girlfriend :)
     if (userExistingClaim && user.user_metadata.user_name !== "notcnrad") {
-      return new Response("user_already_claimed", { status: 409 });
+      return NextResponse.json({error: "user_already_claimed"}, {status: 409});
     }
 
     // Get user metadata
@@ -100,20 +94,20 @@ export async function POST(req: NextRequest, res: NextResponse) {
       include_numbers: includeNumbers,
     };
 
-    const { data, error } = await serviceClient
-      .from("claimed_signatures")
-      .insert(insertData)
-      .select()
-      .limit(1)
-      .maybeSingle();
+    const {data, error} = await serviceClient
+    .from("claimed_signatures")
+    .insert(insertData)
+    .select()
+    .limit(1)
+    .maybeSingle();
 
     if (error) {
-      return new Response("Failed to claim signature", { status: 500 });
+      return NextResponse.json({error: "Failed to claim signature"}, {status: 500});
     }
 
     return Response.json(data);
   } catch (error) {
     console.error("Error claiming signature:", error);
-    return new Response("Internal server error", { status: 500 });
+    return NextResponse.json({error: "Internal server error"}, {status: 500});
   }
 }
