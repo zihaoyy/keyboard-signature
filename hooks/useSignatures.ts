@@ -1,10 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import {
-  claimSignatureAction,
-  getClaimedSignaturesAction,
-  getSignatureByNameAction,
-} from "@/lib/actions";
-import { StrokeConfig } from "@/utils/constants";
+import {useCallback, useEffect, useState} from "react";
+import {claimSignatureAction, getClaimedSignaturesAction, getSignatureByNameAction,} from "@/utils/actions";
+import {StrokeConfig} from "@/utils/constants";
 
 export interface ClaimedSignature {
   id: string;
@@ -67,17 +63,16 @@ export const useSignatures = () => {
         ]);
       }
 
-      return { success: true, data: result.data };
+      return {success: true, data: result.data};
     } catch (error) {
       console.error("Error claiming signature:", error);
-      return { success: false, message: "claim_failed" };
+      return {success: false, message: "claim_failed"};
     }
   };
 
   const getSignatureByName = async (name: string) => {
     try {
-      const data = await getSignatureByNameAction(name);
-      return data;
+      return await getSignatureByNameAction(name);
     } catch (error) {
       console.error("Error fetching signature:", error);
       return null;

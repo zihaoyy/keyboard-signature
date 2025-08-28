@@ -1,6 +1,6 @@
 import {motion} from "motion/react";
 import {StrokeStyle, StrokeConfig} from "@/utils/constants";
-import {getTweetUrl} from "@/lib/tweet";
+import {getTweetUrl} from "@/utils/tweet";
 import {XIcon} from "./XIcon";
 import Link from "next/link";
 
