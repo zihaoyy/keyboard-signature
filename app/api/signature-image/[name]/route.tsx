@@ -4,8 +4,6 @@ import {NextResponse} from "next/server";
 
 export const runtime = "edge";
 
-export const contentType = 'image/png';
-
 interface SignatureImageProps {
   params: Promise<{ name: string }>
 }
