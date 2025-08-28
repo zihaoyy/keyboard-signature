@@ -5,8 +5,10 @@ export const metadata: Metadata = {
   title: "Digitized Signatures",
 };
 
-export default function Page() {
+export default async function Page() {
+  const allowedClaimCount = parseInt(process.env.ALLOWED_CLAIM_SIGNATURE_COUNT || '1');
+
   return (
-    <KeyboardSignature/>
+    <KeyboardSignature allowedClaimCount={allowedClaimCount}/>
   );
 }

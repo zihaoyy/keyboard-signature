@@ -1,5 +1,3 @@
-"use server";
-
 import {ClaimSignatureParams} from "@/app/api/signatures/claim/route";
 import {UnclaimSignatureParams} from "@/app/api/signatures/unclaim/route";
 
@@ -80,7 +78,6 @@ export async function getClaimedSignaturesAction() {
 export async function getUserClaimedSignaturesAction() {
   // This function is now a client-side wrapper that calls the API
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/signatures/user`);
-
   if (!response.ok) {
     return [];
   }

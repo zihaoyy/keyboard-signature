@@ -4,7 +4,7 @@ import {NextResponse} from "next/server";
 export async function GET() {
   try {
     // Use service role client for database operations
-    const serviceClient = createSupabaseServiceClient();
+    const serviceClient = await createSupabaseServiceClient();
 
     const {data, error} = await serviceClient
     .from("claimed_signatures")
@@ -13,12 +13,12 @@ export async function GET() {
 
     if (error) {
       console.error("Error fetching signatures:", error);
-      return NextResponse.json({error: "Failed to fetch signatures"}, {status: 500});
+      return NextResponse.json({message: "Failed to fetch signatures"}, {status: 500});
     }
 
     return Response.json(data || []);
   } catch (error) {
     console.error("Error fetching signatures:", error);
-    return NextResponse.json({error: "Internal server error"}, {status: 500});
+    return NextResponse.json({message: "Internal server error"}, {status: 500});
   }
 }

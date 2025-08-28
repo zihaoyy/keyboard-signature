@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import {
   claimSignatureAction,
   getSignatureByNameAction,
@@ -6,9 +6,9 @@ import {
   getUserClaimedSignaturesAction,
   unclaimSignatureAction,
 } from "@/lib/actions";
-import { StrokeConfig } from "@/utils/constants";
-import type { ClaimedSignature } from "@/hooks/useSignatures";
-import { UnclaimSignatureParams } from "@/app/api/signatures/unclaim/route";
+import {StrokeConfig} from "@/utils/constants";
+import type {ClaimedSignature} from "@/hooks/useSignatures";
+import {UnclaimSignatureParams} from "@/app/api/signatures/unclaim/route";
 
 export interface ClaimSignatureParams {
   name: string;
@@ -21,7 +21,7 @@ export interface ClaimSignatureParams {
 export const signatureKeys = {
   all: ["signatures"] as const,
   lists: () => [...signatureKeys.all, "list"] as const,
-  list: (filters: string) => [...signatureKeys.lists(), { filters }] as const,
+  list: (filters: string) => [...signatureKeys.lists(), {filters}] as const,
   details: () => [...signatureKeys.all, "detail"] as const,
   detail: (name: string) => [...signatureKeys.details(), name] as const,
   user: () => [...signatureKeys.all, "user"] as const,
@@ -64,9 +64,9 @@ export const useClaimSignature = () => {
     onSuccess: (data) => {
       if (data.success) {
         // Invalidate and refetch relevant queries
-        queryClient.invalidateQueries({ queryKey: signatureKeys.lists() });
-        queryClient.invalidateQueries({ queryKey: signatureKeys.user() });
-        queryClient.invalidateQueries({ queryKey: signatureKeys.details() });
+        queryClient.invalidateQueries({queryKey: signatureKeys.lists()});
+        queryClient.invalidateQueries({queryKey: signatureKeys.user()});
+        queryClient.invalidateQueries({queryKey: signatureKeys.details()});
       }
     },
     onError: (error) => {
@@ -85,9 +85,9 @@ export const useUnclaimSignature = () => {
     onSuccess: (data) => {
       if (data.success) {
         // Invalidate and refetch relevant queries
-        queryClient.invalidateQueries({ queryKey: signatureKeys.lists() });
-        queryClient.invalidateQueries({ queryKey: signatureKeys.user() });
-        queryClient.invalidateQueries({ queryKey: signatureKeys.details() });
+        queryClient.invalidateQueries({queryKey: signatureKeys.lists()});
+        queryClient.invalidateQueries({queryKey: signatureKeys.user()});
+        queryClient.invalidateQueries({queryKey: signatureKeys.details()});
       }
     },
     onError: (error) => {
@@ -98,16 +98,16 @@ export const useUnclaimSignature = () => {
 
 // Hook to search signatures (client-side filtering)
 export const useSearchSignatures = (query: string) => {
-  const { data: signatures = [], isLoading } = useClaimedSignatures();
+  const {data: signatures = [], isLoading} = useClaimedSignatures();
 
   const searchResults = query.trim()
     ? signatures.filter(
-        (sig: ClaimedSignature) =>
-          sig.name.toLowerCase().includes(query.toLowerCase().trim()) ||
-          sig.claimed_by_username
-            .toLowerCase()
-            .includes(query.toLowerCase().trim())
-      )
+      (sig: ClaimedSignature) =>
+        sig.name.toLowerCase().includes(query.toLowerCase().trim()) ||
+        sig.claimed_by_username
+        .toLowerCase()
+        .includes(query.toLowerCase().trim())
+    )
     : [];
 
   return {

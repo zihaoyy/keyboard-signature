@@ -1,8 +1,8 @@
 import {NextResponse} from "next/server";
 import {createSupabaseServerClient} from "@/utils/supabase/server";
 
-export async function getServerUser(request: Request) {
-  const supabase = await createSupabaseServerClient(request);
+export async function getServerUser() {
+  const supabase = await createSupabaseServerClient();
 
   const {
     data: {user},
@@ -29,11 +29,11 @@ export async function getServerUser(request: Request) {
   };
 }
 
-export async function requireAuth(request: Request) {
-  const user = await getServerUser(request);
+export async function requireAuth() {
+  const user = await getServerUser();
 
   if (!user) {
-    return NextResponse.json({error: "Unauthorized"}, {status: 401});
+    return NextResponse.json({message: "Unauthorized"}, {status: 401});
   }
 
   return user;
