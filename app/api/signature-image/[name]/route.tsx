@@ -1,8 +1,10 @@
-import {getSignatureByNameAction} from "@/lib/actions";
+import {getSignatureByNameAction} from "@/utils/actions";
 import {ImageResponse} from "@vercel/og";
 import {NextResponse} from "next/server";
 
 export const runtime = "edge";
+
+export const contentType = 'image/png';
 
 interface SignatureImageProps {
   params: Promise<{ name: string }>

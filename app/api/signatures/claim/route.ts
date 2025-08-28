@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {StrokeConfig} from "@/utils/constants";
 import {createSupabaseServerClient, createSupabaseServiceClient} from "@/utils/supabase/server";
-import {getServerUser} from "@/lib/auth";
+import {getServerUser} from "@/utils/auth";
 
 export interface ClaimSignatureParams {
   name: string;
