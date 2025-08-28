@@ -293,52 +293,6 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
     URL.revokeObjectURL(url);
   };
 
-  const exportPNG = () => {
-    if (!signaturePath || !name) return;
-
-    const height = includeNumbers ? 260 : 200;
-    const canvas = document.createElement("canvas");
-    canvas.width = 1300;
-    canvas.height = height * 2;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Higher res
-    ctx.scale(2, 2);
-
-    // Background
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 650, height);
-
-    // Configure stroke
-    ctx.lineWidth = strokeConfig.width;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    // Set stroke style based on configuration
-    if (strokeConfig.style === StrokeStyle.SOLID) {
-      ctx.strokeStyle = strokeConfig.color;
-    } else if (strokeConfig.style === StrokeStyle.GRADIENT) {
-      const gradient = ctx.createLinearGradient(0, 0, 650, 0);
-      gradient.addColorStop(0, strokeConfig.gradientStart);
-      gradient.addColorStop(1, strokeConfig.gradientEnd);
-      ctx.strokeStyle = gradient;
-    }
-
-    const path = new Path2D(signaturePath);
-    ctx.stroke(path);
-
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${name}-signature.png`;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-  };
-
   if (showClaimedPage) {
     return <ClaimedPage onBack={() => setShowClaimedPage(false)} user={user}/>;
   }
@@ -715,7 +669,7 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
       </div>
 
       <div
-        className={`max-sm:w-[20rem] max-sm:mx-auto flex flex-col gap-2 sm:mt-8 transition-all ease-in-out ${
+        className={`max-sm:w-[20rem] max-sm:mx-auto flex flex-col gap-6 sm:mt-8 transition-all ease-in-out ${
           name.length > 1
             ? "opacity-100 translate-y-0 duration-1000"
             : "pointer-events-none opacity-0 translate-y-2 duration-150"
@@ -725,7 +679,7 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
         existingSignature?.claimed_by_username === user?.username ? (
           <button
             onClick={handleUnclaim}
-            className="flex items-center justify-center gap-1 font-medium text-red-500 border border-red-700/50 px-3.5 py-1.5 bg-red-900/25 text-sm rounded-md hover:bg-red-900/30 cursor-pointer transition-all duration-100 ease-out hover:text-red-400"
+            className="relative inline-flex items-center justify-center select-none rounded-2xl disabled:cursor-not-allowed ease-in-out border-[2px]  backdrop-blur-[25px] bg-origin-border shadow-sm not-disabled:hover:bg-red-700/80 not-disabled:hover:text-white not-disabled:hover:shadow-button transition-all duration-200 disabled:opacity-30 disabled:text-white/50 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/90 focus-visible:text-black text-base h-12 gap-0 px-5 font-semibold text-red-300 border-red-700/50 py-1.5 bg-red-500/50 hover:bg-red-900/30 cursor-pointer hover:text-red-400"
           >
             Unclaim
           </button>
@@ -745,11 +699,7 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
             type="button"
             onClick={handleClaim}
             disabled={!user || !name || !!claimedBy}
-            className={`font-medium px-3.5 py-1.5 text-sm rounded-md text-center active:scale-98 transition-all duration-100 ease-out ${
-              !user || !name || !!claimedBy
-                ? "text-neutral-600 border border-neutral-800/50 bg-neutral-900/30 cursor-not-allowed"
-                : "text-neutral-500 border border-neutral-700/50 bg-neutral-900/50 active:brightness-70 hover:brightness-85 cursor-pointer"
-            }`}
+            className="cursor-pointer relative inline-flex items-center justify-center select-none rounded-2xl disabled:cursor-not-allowed ease-in-out text-white border-[2px] border-white/5 backdrop-blur-[25px] bg-origin-border bg-[linear-gradient(104deg,rgba(253,253,253,0.05)_5%,rgba(240,240,228,0.1)_100%)] shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 disabled:opacity-30 disabled:text-white/50 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/90 focus-visible:text-black after:absolute after:w-[calc(100%+4px)] after:h-[calc(100%+4px)] after:top-[-2px] after:left-[-2px] after:rounded-[1rem] after:bg-[url('/static/texture-btn.png')] after:bg-repeat after:pointer-events-none text-base h-12 gap-0 px-5 font-semibold"
           >
             {!user
               ? "Login to Claim"
@@ -761,37 +711,14 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
           </button>
         )}
 
-        <div className="grid grid-cols-2 gap-2 mt-4">
           <button
             type="button"
             onClick={exportSVG}
-            className="bg-white text-black px-3.5 py-1.5 origin-right rounded-md text-sm font-semibold cursor-pointer active:scale-98 active:brightness-70 hover:brightness-85 transition-all duration-100 ease-out"
+            className="cursor-pointer relative inline-flex items-center justify-center select-none rounded-2xl disabled:cursor-not-allowed ease-in-out text-gray-500 border-[2px] border-white/5 bg-white/5 shadow-sm not-disabled:hover:bg-white/10 not-disabled:hover:text-white/50 not-disabled:hover:shadow-button transition-all duration-200 disabled:opacity-30 disabled:text-white/50 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/20 focus-visible:text-black text-base h-12 gap-0 px-5 font-semibold"
           >
-            Export SVG
+            Download
           </button>
-
-          <button
-            type="button"
-            onClick={exportPNG}
-            className="bg-white text-black px-3.5 py-1.5 origin-left rounded-md text-sm font-semibold cursor-pointer active:scale-98 active:brightness-70 hover:brightness-85 transition-all duration-100 ease-out"
-          >
-            Export PNG
-          </button>
-        </div>
       </div>
-
-      <a
-        className="absolute cursor-pointer left-1/2 bottom-8 -translate-x-1/2 opacity-50 hover:opacity-100 text-sm flex flex-col items-center transition-all duration-150 ease-out text-center"
-        href="https://axiom.trade/meme/3URGpspzJUT7d3LN1kfbjm6koy5fNQTgQqDY8Zh1rZ8H"
-        rel="noreferrer noopener"
-        target="_blank"
-      >
-        <p className="font-bold text-white text-base">$SIGN</p>
-        <p className=" text-neutral-300 max-sm:break-all">
-          <span className="text-neutral-400 font-bold">CA:</span>{" "}
-          GjbLHUmyUo6JFczvaTbsj9p1LjsXmvR8Vk9gRPNLBAGS
-        </p>
-      </a>
 
       <AnimatePresence>
         {optionsOpen ? (
