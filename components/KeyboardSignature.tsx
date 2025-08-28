@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {
   KeyboardLayout,
   CurveType,
@@ -9,21 +9,21 @@ import {
   StrokeStyle,
   StrokeConfig,
 } from "@/utils/constants";
-import { AnimatePresence, motion } from "motion/react";
-import { ColorPicker } from "@/components/ColorPicker";
-import { ClaimedPage } from "@/components/ClaimedPage";
-import { ClaimPopup } from "@/components/ClaimPopup";
-import { SignatureDetailModal } from "@/components/SignatureDetailModal";
-import type { ClaimedSignature } from "@/hooks/useSignatures";
-import { useAuth } from "@/hooks/useAuth";
+import {AnimatePresence, motion} from "motion/react";
+import {ColorPicker} from "@/components/ColorPicker";
+import {ClaimedPage} from "@/components/ClaimedPage";
+import {ClaimPopup} from "@/components/ClaimPopup";
+import {SignatureDetailModal} from "@/components/SignatureDetailModal";
+import type {ClaimedSignature} from "@/hooks/useSignatures";
+import {useAuth} from "@/hooks/useAuth";
 import {
   useClaimSignature,
   useSignatureByName,
   useSearchSignatures,
   useUnclaimSignature,
 } from "@/hooks/useSignaturesQuery";
-import { useDebounce } from "@/hooks/useDebounce";
-import { GithubIcon } from "./GithubIcon";
+import {useDebounce} from "@/hooks/useDebounce";
+import {GithubIcon} from "./GithubIcon";
 
 const DEFAULT_STROKE_CONFIG = {
   style: StrokeStyle.SOLID,
@@ -33,7 +33,11 @@ const DEFAULT_STROKE_CONFIG = {
   width: 3,
 };
 
-export const KeyboardSignature = () => {
+interface KeyboardSignatureProps {
+  allowedClaimCount?: number;
+}
+
+export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProps) => {
   const [name, setName] = useState("");
   const [currentKeyboardLayout, setCurrentKeyboardLayout] =
     useState<KeyboardLayout>(KeyboardLayout.QWERTY);
@@ -57,11 +61,11 @@ export const KeyboardSignature = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [claimError, setClaimError] = useState<string | null>(null);
 
-  const { user, signInWithGithub, signOut } = useAuth();
+  const {user, signInWithGithub, signOut} = useAuth();
   const claimSignatureMutation = useClaimSignature();
   const unclaimSignatureMutation = useUnclaimSignature();
-  const { data: existingSignature } = useSignatureByName(debouncedName); // API call debounced
-  const { searchResults } = useSearchSignatures(debouncedSearchQuery); // Search API debounced
+  const {data: existingSignature} = useSignatureByName(debouncedName); // API call debounced
+  const {searchResults} = useSearchSignatures(debouncedSearchQuery); // Search API debounced
   const [strokeConfig, setStrokeConfig] = useState<StrokeConfig>(
     DEFAULT_STROKE_CONFIG
   );
@@ -148,9 +152,9 @@ export const KeyboardSignature = () => {
 
     for (const char of name.toUpperCase()) {
       if (char in currentLayout) {
-        const { x, y } = currentLayout[char];
+        const {x, y} = currentLayout[char];
         const yOffset = includeNumbers ? 100 : 40;
-        points.push({ x: x * 60 + 28, y: y * 60 + yOffset });
+        points.push({x: x * 60 + 28, y: y * 60 + yOffset});
       }
     }
 
@@ -165,9 +169,9 @@ export const KeyboardSignature = () => {
     );
     return new Set(
       name
-        .toUpperCase()
-        .split("")
-        .filter((char) => char in currentLayout)
+      .toUpperCase()
+      .split("")
+      .filter((char) => char in currentLayout)
     );
   }, [name, currentKeyboardLayout, includeNumbers]); // Use name directly
 
@@ -213,7 +217,7 @@ export const KeyboardSignature = () => {
             setClaimError("Signature already claimed");
           } else if (result.error === "user_already_claimed") {
             setClaimError(
-              "You already claimed a signature. Only 1 signature per account."
+              `You already claimed a signature. Only ${allowedClaimCount} signature${allowedClaimCount > 1 ? 's' : ''} per account.`
             );
           } else {
             setClaimError("Failed to claim signature. Please try again.");
@@ -280,7 +284,7 @@ export const KeyboardSignature = () => {
           <path d="${signaturePath}" stroke="${strokeColor}" stroke-width="${strokeConfig.width}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`;
 
-    const blob = new Blob([svgContent], { type: "image/svg+xml" });
+    const blob = new Blob([svgContent], {type: "image/svg+xml"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -336,20 +340,21 @@ export const KeyboardSignature = () => {
   };
 
   if (showClaimedPage) {
-    return <ClaimedPage onBack={() => setShowClaimedPage(false)} user={user} />;
+    return <ClaimedPage onBack={() => setShowClaimedPage(false)} user={user}/>;
   }
 
   return (
-    <div className="flex flex-col sm:items-center max-sm:mx-auto max-sm:w-[28rem] sm:w-fit h-screen justify-center">
-      {user ? (
+    <div className="flex flex-col sm:items-center max-sm:mx-auto max-sm:w-[24rem] sm:w-fit h-screen justify-center">
+      {claimError ? (
         <motion.div
-          initial={{ y: -4, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -4, opacity: 0 }}
-          transition={{ duration: 1, ease: [0.26, 1, 0.6, 1] }}
+          initial={{y: -4, opacity: 0}}
+          animate={{y: 0, opacity: 1}}
+          exit={{y: -4, opacity: 0}}
+          transition={{duration: 1, ease: [0.26, 1, 0.6, 1]}}
           className="absolute top-24 left-1/2 -translate-x-1/2"
         >
-          <div className="inline-flex items-center gap-2 bg-yellow-900/20 border border-yellow-700/30 rounded-lg px-4 py-2">
+          <div
+            className="inline-flex items-center gap-2 bg-yellow-900/20 border border-yellow-700/30 rounded-lg px-4 py-2">
             <svg
               width="16"
               height="16"
@@ -359,12 +364,12 @@ export const KeyboardSignature = () => {
               strokeWidth="2"
               className="text-yellow-400"
             >
-              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-              <path d="M12 9v4" />
-              <path d="m12 17.02.01-.02" />
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <path d="M12 9v4"/>
+              <path d="m12 17.02.01-.02"/>
             </svg>
             <p className="text-sm text-yellow-200 font-medium text-center">
-              You can only claim 1 signature per account
+              {claimError}
             </p>
           </div>
         </motion.div>
@@ -375,7 +380,7 @@ export const KeyboardSignature = () => {
           <motion.div
             animate={{
               width: showSearchInput ? 200 : 36,
-              transition: { duration: 0.3, ease: [0.6, 1, 0.26, 1] },
+              transition: {duration: 0.3, ease: [0.6, 1, 0.26, 1]},
             }}
             className="flex items-center bg-neutral-900/50 border border-neutral-700/50 rounded-lg overflow-hidden"
           >
@@ -391,8 +396,8 @@ export const KeyboardSignature = () => {
                 fill="none"
                 stroke="currentColor"
               >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.35-4.35" />
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.35-4.35"/>
               </svg>
             </button>
 
@@ -400,10 +405,10 @@ export const KeyboardSignature = () => {
               {showSearchInput && (
                 <motion.input
                   ref={searchInputRef}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.2, delay: 0.1 }}
+                  initial={{opacity: 0, x: -20}}
+                  animate={{opacity: 1, x: 0}}
+                  exit={{opacity: 0, x: -20}}
+                  transition={{duration: 0.2, delay: 0.1}}
                   autoFocus
                   type="text"
                   value={searchQuery}
@@ -426,8 +431,8 @@ export const KeyboardSignature = () => {
 
             {searchQuery && (
               <motion.button
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{opacity: 0, scale: 0.5}}
+                animate={{opacity: 1, scale: 1}}
                 onClick={(e) => {
                   e.stopPropagation();
                   setSearchQuery("");
@@ -441,7 +446,8 @@ export const KeyboardSignature = () => {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                 >
-                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                  <path
+                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                 </svg>
               </motion.button>
             )}
@@ -451,9 +457,9 @@ export const KeyboardSignature = () => {
             {(searchResults.length > 0 || searchQuery.trim()) &&
               showSearchInput && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  initial={{opacity: 0, y: -10}}
+                  animate={{opacity: 1, y: 0}}
+                  exit={{opacity: 0, y: -10}}
                   className="search-results absolute top-full left-0 mt-2 w-80 max-w-[90vw] sm:w-96 z-30"
                 >
                   {searchQuery.trim() &&
@@ -475,7 +481,8 @@ export const KeyboardSignature = () => {
                           className="px-4 py-3 bg-neutral-900/90 backdrop-blur-sm border border-neutral-700/50 rounded-lg mb-2 hover:bg-neutral-800/90 cursor-pointer transition-colors duration-150"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="bg-black rounded p-2 w-12 h-6 flex items-center justify-center flex-shrink-0">
+                            <div
+                              className="bg-black rounded p-2 w-12 h-6 flex items-center justify-center flex-shrink-0">
                               <svg
                                 width="48"
                                 height="20"
@@ -485,29 +492,29 @@ export const KeyboardSignature = () => {
                                 <defs>
                                   {signature.stroke_config.style ===
                                     "gradient" && (
-                                    <linearGradient
-                                      id={`search-gradient-${signature.id}`}
-                                      x1="0%"
-                                      y1="0%"
-                                      x2="100%"
-                                      y2="0%"
-                                    >
-                                      <stop
-                                        offset="0%"
-                                        stopColor={
-                                          signature.stroke_config.gradientStart
-                                        }
-                                        stopOpacity={1}
-                                      />
-                                      <stop
-                                        offset="100%"
-                                        stopColor={
-                                          signature.stroke_config.gradientEnd
-                                        }
-                                        stopOpacity={1}
-                                      />
-                                    </linearGradient>
-                                  )}
+                                      <linearGradient
+                                        id={`search-gradient-${signature.id}`}
+                                        x1="0%"
+                                        y1="0%"
+                                        x2="100%"
+                                        y2="0%"
+                                      >
+                                        <stop
+                                          offset="0%"
+                                          stopColor={
+                                            signature.stroke_config.gradientStart
+                                          }
+                                          stopOpacity={1}
+                                        />
+                                        <stop
+                                          offset="100%"
+                                          stopColor={
+                                            signature.stroke_config.gradientEnd
+                                          }
+                                          stopOpacity={1}
+                                        />
+                                      </linearGradient>
+                                    )}
                                 </defs>
                                 <path
                                   d={signature.signature_path}
@@ -537,13 +544,15 @@ export const KeyboardSignature = () => {
                       ))}
                     </div>
                   ) : searchQuery.trim() ? (
-                    <div className="px-4 py-3 bg-neutral-900/90 backdrop-blur-sm border border-neutral-700/50 rounded-lg text-center">
+                    <div
+                      className="px-4 py-3 bg-neutral-900/90 backdrop-blur-sm border border-neutral-700/50 rounded-lg text-center">
                       <p className="text-neutral-400 text-sm">
                         No signatures found for &quot;{searchQuery}&quot;
                       </p>
                     </div>
                   ) : (
-                    <div className="px-4 py-3 bg-neutral-900/90 backdrop-blur-sm border border-neutral-700/50 rounded-lg text-center">
+                    <div
+                      className="px-4 py-3 bg-neutral-900/90 backdrop-blur-sm border border-neutral-700/50 rounded-lg text-center">
                       <p className="text-neutral-400 text-sm">
                         Start typing to search signatures...
                       </p>
@@ -561,7 +570,7 @@ export const KeyboardSignature = () => {
             onClick={handleLogin}
             className="whitespace-nowrap text-white flex flex-row items-center gap-2 font-semibold cursor-pointer hover:bg-neutral-950 rounded-full bg-black border border-neutral-800/75 px-4 py-2 opacity-75 hover:opacity-100 duration-150 ease-out transition-opacity"
           >
-            <GithubIcon width={20} height={20} className="fill-white" />
+            <GithubIcon width={20} height={20} className="fill-white"/>
             Connect with Github
           </button>
         ) : (
@@ -582,10 +591,10 @@ export const KeyboardSignature = () => {
             <AnimatePresence>
               {dropdownOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                  transition={{ duration: 0.15, ease: [0.26, 1, 0.6, 1] }}
+                  initial={{opacity: 0, y: -10, scale: 0.95}}
+                  animate={{opacity: 1, y: 0, scale: 1}}
+                  exit={{opacity: 0, y: -10, scale: 0.95}}
+                  transition={{duration: 0.15, ease: [0.26, 1, 0.6, 1]}}
                   className="absolute right-0  gap-1 top-full mt-2 bg-neutral-950 border border-neutral-800 rounded-lg p-2 min-w-[120px]"
                 >
                   <button
@@ -625,10 +634,10 @@ export const KeyboardSignature = () => {
             name.length < 2
               ? "opacity-100"
               : keyboardVisible
-              ? "opacity-100 brightness-125 duration-50"
-              : "opacity-0 duration-4000"
+                ? "opacity-100 brightness-125 duration-50"
+                : "opacity-0 duration-4000"
           }`}
-          style={{ width: "650px", height: includeNumbers ? "260px" : "200px" }}
+          style={{width: "650px", height: includeNumbers ? "260px" : "200px"}}
         >
           {Object.entries(
             getKeyboardLayout(currentKeyboardLayout, includeNumbers)
@@ -645,8 +654,8 @@ export const KeyboardSignature = () => {
                   isCurrentKey
                     ? "bg-white/50 border-neutral-400 text-black scale-110"
                     : isActive
-                    ? "bg-neutral-900 border-neutral-800 text-white"
-                    : "bg-transparent border-neutral-800/50 text-neutral-300"
+                      ? "bg-neutral-900 border-neutral-800 text-white"
+                      : "bg-transparent border-neutral-800/50 text-neutral-300"
                 }`}
                 style={{
                   left: `${pos.x * 60}px`,
@@ -663,7 +672,7 @@ export const KeyboardSignature = () => {
           className="pointer-events-none absolute top-0 left-0"
           width="650"
           height={includeNumbers ? "260" : "200"}
-          style={{ zIndex: 10 }}
+          style={{zIndex: 10}}
         >
           <defs>
             {strokeConfig.style === StrokeStyle.GRADIENT && (
@@ -721,7 +730,8 @@ export const KeyboardSignature = () => {
             Unclaim
           </button>
         ) : claimedBy ? (
-          <div className="flex items-center justify-center gap-1 font-medium text-neutral-500 border border-neutral-700/50 px-3.5 py-1.5 bg-neutral-900/50 text-sm rounded-md">
+          <div
+            className="flex items-center justify-center gap-1 font-medium text-neutral-500 border border-neutral-700/50 px-3.5 py-1.5 bg-neutral-900/50 text-sm rounded-md">
             <span>Claimed by</span>
             <button
               onClick={() => handleTwitterRedirect(claimedBy)}
@@ -744,10 +754,10 @@ export const KeyboardSignature = () => {
             {!user
               ? "Login to Claim"
               : !name
-              ? "Enter Name"
-              : claimedBy
-              ? "Already Claimed"
-              : "Claim Signature"}
+                ? "Enter Name"
+                : claimedBy
+                  ? "Already Claimed"
+                  : "Claim Signature"}
           </button>
         )}
 
@@ -786,9 +796,9 @@ export const KeyboardSignature = () => {
       <AnimatePresence>
         {optionsOpen ? (
           <motion.div
-            initial={{ y: 4, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 4, opacity: 0 }}
+            initial={{y: 4, opacity: 0}}
+            animate={{y: 0, opacity: 1}}
+            exit={{y: 4, opacity: 0}}
             transition={{
               duration: 0.4,
               ease: [0.6, 1, 0.26, 1],
@@ -892,7 +902,7 @@ export const KeyboardSignature = () => {
                   <button
                     key={style}
                     onClick={() =>
-                      setStrokeConfig((prev) => ({ ...prev, style }))
+                      setStrokeConfig((prev) => ({...prev, style}))
                     }
                     className={`px-3 py-1 text-xs rounded-full transition-all duration-150 ease-out cursor-pointer border ${
                       strokeConfig.style === style
@@ -914,7 +924,7 @@ export const KeyboardSignature = () => {
                   <ColorPicker
                     value={strokeConfig.color}
                     onChange={(color) =>
-                      setStrokeConfig((prev) => ({ ...prev, color }))
+                      setStrokeConfig((prev) => ({...prev, color}))
                     }
                   />
                 </>
@@ -985,9 +995,9 @@ export const KeyboardSignature = () => {
           <motion.button
             onClick={() => setOptionsOpen(true)}
             className="absolute bottom-6 right-6 px-4 py-2 rounded-lg bg-neutral-950 border-neutral-800/50 border cursor-pointer text-sm font-medium text-neutral-200"
-            initial={{ y: -4, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -4, opacity: 0 }}
+            initial={{y: -4, opacity: 0}}
+            animate={{y: 0, opacity: 1}}
+            exit={{y: -4, opacity: 0}}
             transition={{
               duration: 0.4,
               ease: [0.6, 1, 0.26, 1],

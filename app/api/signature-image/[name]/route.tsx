@@ -14,7 +14,7 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
 
     // Validate and sanitize input
     if (!name) {
-      return NextResponse.json({error: "Invalid signature name"}, {
+      return NextResponse.json({message: "Invalid signature name"}, {
         status: 400,
         headers: {"Content-Type": "application/json"},
       });
@@ -22,7 +22,7 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
     // Sanitize name - only allow alphanumeric characters and spaces
     const sanitizedName = name.replace(/[^a-zA-Z0-9\s]/g, "").trim();
     if (!sanitizedName) {
-      return NextResponse.json({error: "Invalid signature name"}, {
+      return NextResponse.json({message: "Invalid signature name"}, {
         status: 400,
         headers: {"Content-Type": "application/json"},
       });
@@ -31,7 +31,7 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
     // Get signature data
     const signature = await getSignatureByNameAction(sanitizedName);
     if (!signature) {
-      return NextResponse.json({error: "Signature not found"}, {
+      return NextResponse.json({message: "Signature not found"}, {
         status: 404,
         headers: {"Content-Type": "application/json"},
       });
@@ -98,7 +98,7 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
     );
   } catch (error) {
     console.error("Error generating signature image:", error);
-    return NextResponse.json({error: "Failed to generate image"}, {
+    return NextResponse.json({message: "Failed to generate image"}, {
       status: 500,
       headers: {"Content-Type": "application/json"},
     });

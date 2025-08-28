@@ -9,12 +9,12 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
   const name = (await params).name;
 
   if (!name) {
-    return NextResponse.json({error: "Invalid signature name"}, {status: 400});
+    return NextResponse.json({message: "Invalid signature name"}, {status: 400});
   }
 
   try {
     // Use service role client for database operations
-    const serviceClient = createSupabaseServiceClient();
+    const serviceClient = await createSupabaseServiceClient();
 
     const {data, error} = await serviceClient
     .from("claimed_signatures")
@@ -24,11 +24,11 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
 
     if (error) {
       console.error("Error fetching signature:", error);
-      return NextResponse.json({error: "Failed to fetch signature"}, {status: 500});
+      return NextResponse.json({message: "Failed to fetch signature"}, {status: 500});
     }
     return Response.json(data || []);
   } catch (error) {
     console.error("Error fetching signatures:", error);
-    return NextResponse.json({error: "Internal server error"}, {status: 500});
+    return NextResponse.json({message: "Internal server error"}, {status: 500});
   }
 }

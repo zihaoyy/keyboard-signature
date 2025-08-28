@@ -4,18 +4,18 @@ import {NextResponse} from "next/server";
 export async function GET(request: Request) {
   try {
     // First, authenticate the user using the client-side client
-    const userClient = await createSupabaseServerClient(request);
+    const userClient = await createSupabaseServerClient();
     const {
       data: {user},
       error: authError,
     } = await userClient.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json({error: "Unauthorized"}, {status: 401});
+      return NextResponse.json({message: "Unauthorized"}, {status: 401});
     }
 
     // Use service role client for database operations (bypasses RLS)
-    const serviceClient = createSupabaseServiceClient();
+    const serviceClient = await createSupabaseServiceClient();
 
     const {data, error} = await serviceClient
     .from("claimed_signatures")
@@ -25,12 +25,12 @@ export async function GET(request: Request) {
 
     if (error) {
       console.error("Error fetching user signatures:", error);
-      return NextResponse.json({error: "Failed to fetch user signatures"}, {status: 500});
+      return NextResponse.json({message: "Failed to fetch user signatures"}, {status: 500});
     }
 
     return Response.json(data || []);
   } catch (error) {
     console.error("Error fetching user signatures:", error);
-    return NextResponse.json({error: "Internal server error"}, {status: 500});
+    return NextResponse.json({message: "Internal server error"}, {status: 500});
   }
 }

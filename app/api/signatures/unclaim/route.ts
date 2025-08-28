@@ -12,28 +12,28 @@ export async function POST(request: Request) {
 
     // Validate input
     if (!name || !username) {
-      return NextResponse.json({error: "Missing required parameters"}, {status: 400});
+      return NextResponse.json({message: "Missing required parameters"}, {status: 400});
     }
 
     // Sanitize name - only allow alphanumeric characters and spaces
     const sanitizedName = name.replace(/[^a-zA-Z0-9\s]/g, "").trim();
     if (!sanitizedName) {
-      return NextResponse.json({error: "Invalid signature name"}, {status: 401});
+      return NextResponse.json({message: "Invalid signature name"}, {status: 401});
     }
 
     // First, authenticate the user using the client-side client
-    const userClient = await createSupabaseServerClient(request);
+    const userClient = await createSupabaseServerClient();
     const {
       data: {user},
       error: authError,
     } = await userClient.auth.getUser();
 
     if (authError || !user) {
-      return NextResponse.json({error: "Unauthorized"}, {status: 401});
+      return NextResponse.json({message: "Unauthorized"}, {status: 401});
     }
 
     // Use service role client for database operations (bypasses RLS)
-    const serviceClient = createSupabaseServiceClient();
+    const serviceClient = await createSupabaseServiceClient();
 
     // Check if signature is claimed
     const {data: existingClaim, error: checkError} = await serviceClient
@@ -45,11 +45,11 @@ export async function POST(request: Request) {
     .maybeSingle();
 
     if (checkError) {
-      return NextResponse.json({error: "Failed to check existing claim"}, {status: 500});
+      return NextResponse.json({message: "Failed to check existing claim"}, {status: 500});
     }
 
     if (!existingClaim) {
-      return NextResponse.json({error: "signature_not_found"}, {status: 404});
+      return NextResponse.json({message: "signature_not_found"}, {status: 404});
     }
 
     // Delete the claimed signature by record id
@@ -59,13 +59,12 @@ export async function POST(request: Request) {
     .eq("id", existingClaim.id);
 
     if (error) {
-      console.log(error);
-      return NextResponse.json({error: "Failed to unclaim signature"}, {status: 500});
+      return NextResponse.json({message: "Failed to unclaim signature"}, {status: 500});
     }
 
     return Response.json({success: "true"});
   } catch (error) {
     console.error("Error unclaiming signature:", error);
-    return NextResponse.json({error: "Internal server error"}, {status: 500});
+    return NextResponse.json({message: "Internal server error"}, {status: 500});
   }
 }

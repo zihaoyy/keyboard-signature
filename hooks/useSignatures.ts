@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import {
   claimSignatureAction,
   getClaimedSignaturesAction,
-  getUserClaimedSignaturesAction,
   getSignatureByNameAction,
 } from "@/lib/actions";
 import { StrokeConfig } from "@/utils/constants";
@@ -71,7 +70,7 @@ export const useSignatures = () => {
       return { success: true, data: result.data };
     } catch (error) {
       console.error("Error claiming signature:", error);
-      return { success: false, error: "claim_failed" };
+      return { success: false, message: "claim_failed" };
     }
   };
 
