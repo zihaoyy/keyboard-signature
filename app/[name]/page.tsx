@@ -114,7 +114,7 @@ export default async function SignaturePage({params}: SignaturePageProps) {
         </svg>
       </div>
 
-      <div className="flex gap-4 mt-8 max-sm:grid max-sm:flex-col max-sm:w-full max-sm:gap-2">
+      <div className="flex gap-4 mt-8 max-sm:grid max-sm:flex-col max-sm:w-full max-sm:gap-8">
         <Link
           href="/"
           className="relative inline-flex items-center justify-center select-none rounded-2xl disabled:cursor-not-allowed ease-in-out text-white border-[2px] border-white/5 backdrop-blur-[25px] bg-origin-border bg-[linear-gradient(104deg,rgba(253,253,253,0.05)_5%,rgba(240,240,228,0.1)_100%)] shadow-sm not-disabled:hover:bg-white/90 not-disabled:hover:text-black not-disabled:hover:shadow-button transition-all duration-200 disabled:opacity-30 disabled:text-white/50 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/90 focus-visible:text-black after:absolute after:w-[calc(100%+4px)] after:h-[calc(100%+4px)] after:top-[-2px] after:left-[-2px] after:rounded-[1rem] after:bg-[url('/static/texture-btn.png')] after:bg-repeat after:pointer-events-none text-base h-12 gap-0 px-5 font-semibold"
