@@ -35,7 +35,7 @@ export const SearchDropdown = ({
   }, [searchQuery, searchSignatures]);
 
   const handleTwitterRedirect = (username: string) => {
-    window.open(`https://twitter.com/${username}`, "_blank");
+    window.open(`https://github.com/${username}`, "_blank");
   };
 
   useEffect(() => {

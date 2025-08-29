@@ -259,7 +259,7 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
   };
 
   const handleTwitterRedirect = (username: string) => {
-    window.open(`https://twitter.com/${username}`, "_blank");
+    window.open(`https://github.com/${username}`, "_blank");
   };
 
   // Export functions
@@ -288,7 +288,7 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${name}-signature.svg`;
+    a.download = `${name.toLowerCase()}-signature.svg`;
     a.click();
     URL.revokeObjectURL(url);
   };

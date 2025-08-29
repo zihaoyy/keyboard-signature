@@ -172,8 +172,8 @@ export const ClaimPopup = ({
             href={getTweetUrl(name)}
             className="w-full bg-neutral-950 border border-neutral-800 cursor-pointer hover:brightness-85 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-150 flex items-center justify-center gap-2"
           >
+            Share on
             <XIcon className="fill-white size-5"/>
-            Share
           </Link>
 
           <button
