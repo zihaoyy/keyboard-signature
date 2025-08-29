@@ -64,7 +64,7 @@ export const downloadSignatureBySVG = (signature: ClaimedSignature) => {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${name}-signature.svg`;
+  a.download = `${signature.name.toLowerCase()}-signature.svg`;
   a.click();
   URL.revokeObjectURL(url);
 };
