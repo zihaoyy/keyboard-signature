@@ -1,6 +1,6 @@
 import {Metadata} from "next";
 import Link from "next/link";
-import {XIcon} from "@/components/XIcon";
+import {XIcon} from "@/components/icons/x";
 import {getUserSignatureAction} from "@/utils/actions";
 import {ClaimedSignature} from "@/hooks/useSignatures";
 import {getTweetUrl} from "@/utils/tweet";

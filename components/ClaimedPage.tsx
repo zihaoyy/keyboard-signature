@@ -1,8 +1,8 @@
 import Link from "next/link";
 import {motion} from "motion/react";
-import {XIcon} from "./XIcon";
+import {XIcon} from "@/components/icons/x";
 import {getTweetUrl} from "@/utils/tweet";
-import {downloadSignatureBySVG} from "@/utils/downloadSignature";
+import {downloadSVG} from "@/utils/download-picture";
 import {useUserClaimedSignatures} from "@/hooks/useSignaturesQuery";
 
 interface ClaimedPageProps {
@@ -133,7 +133,7 @@ export const ClaimedPage = ({onBack, user}: ClaimedPageProps) => {
                   </Link>
 
                   <button
-                    onClick={() => downloadSignatureBySVG(signature)}
+                    onClick={() => downloadSVG(signature)}
                     type="button"
                     className="cursor-pointer bg-white text-black px-4 py-2 rounded-md text-sm font-medium hover:brightness-85 transition-all duration-100 max-sm:w-full"
                   >

@@ -1,5 +1,5 @@
 import type {ClaimedSignature} from "@/hooks/useSignatures";
-import {StrokeStyle} from "@/utils/constants";
+import {StrokeStyle} from "@/app/types/signature";
 
 export const downloadSignatureByPNG = (signature: ClaimedSignature) => {
   const height = signature.include_numbers ? 260 : 200;
@@ -39,7 +39,7 @@ export const downloadSignatureByPNG = (signature: ClaimedSignature) => {
   });
 };
 
-export const downloadSignatureBySVG = (signature: ClaimedSignature) => {
+export const downloadSVG = (signature: ClaimedSignature) => {
   if (!signature.signature_path || !signature.name) return;
 
   const height = signature.include_numbers ? 260 : 200;

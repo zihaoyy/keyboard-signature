@@ -1,7 +1,8 @@
-import { motion, AnimatePresence } from "motion/react";
-import { useState, useEffect, useRef } from "react";
-import { useSignatures } from "@/hooks/useSignatures";
-import type { ClaimedSignature } from "@/hooks/useSignatures";
+import {motion, AnimatePresence} from "motion/react";
+import {useState, useEffect, useRef} from "react";
+import {useSignatures} from "@/hooks/useSignatures";
+import type {ClaimedSignature} from "@/hooks/useSignatures";
+import {handleGithubRedirect} from "@/utils/get-github";
 
 interface SearchDropdownProps {
   isOpen: boolean;
@@ -10,13 +11,13 @@ interface SearchDropdownProps {
 }
 
 export const SearchDropdown = ({
-  isOpen,
-  onClose,
-  onSignatureClick,
-}: SearchDropdownProps) => {
+                                 isOpen,
+                                 onClose,
+                                 onSignatureClick,
+                               }: SearchDropdownProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<ClaimedSignature[]>([]);
-  const { searchSignatures } = useSignatures();
+  const {searchSignatures} = useSignatures();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -33,10 +34,6 @@ export const SearchDropdown = ({
       setSearchResults([]);
     }
   }, [searchQuery, searchSignatures]);
-
-  const handleTwitterRedirect = (username: string) => {
-    window.open(`https://twitter.com/${username}`, "_blank");
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -58,10 +55,10 @@ export const SearchDropdown = ({
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            transition={{ duration: 0.2, ease: [0.6, 1, 0.26, 1] }}
+            initial={{opacity: 0, y: -10, scale: 0.95}}
+            animate={{opacity: 1, y: 0, scale: 1}}
+            exit={{opacity: 0, y: -10, scale: 0.95}}
+            transition={{duration: 0.2, ease: [0.6, 1, 0.26, 1]}}
             className="absolute top-full left-0 mt-2 bg-neutral-900 border border-neutral-700 rounded-lg shadow-lg w-80 max-w-[90vw] sm:w-96 z-30 overflow-hidden"
           >
             {/* Search Input */}
@@ -75,8 +72,8 @@ export const SearchDropdown = ({
                   stroke="currentColor"
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400"
                 >
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="m21 21-4.35-4.35" />
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
                 </svg>
                 <input
                   ref={inputRef}
@@ -102,8 +99,8 @@ export const SearchDropdown = ({
                   {searchResults.map((signature) => (
                     <motion.div
                       key={signature.id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      initial={{opacity: 0}}
+                      animate={{opacity: 1}}
                       className="px-4 py-3 hover:bg-neutral-800/50 cursor-pointer transition-colors duration-150"
                       onClick={() => onSignatureClick(signature)}
                     >
@@ -165,7 +162,7 @@ export const SearchDropdown = ({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleTwitterRedirect(
+                                handleGithubRedirect(
                                   signature.claimed_by_username
                                 );
                               }}

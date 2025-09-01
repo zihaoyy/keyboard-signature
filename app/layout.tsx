@@ -1,7 +1,7 @@
 import {ReactNode} from "react";
 // import { Geist_Mono, Open_Sans } from "next/font/google";
 import "@/styles/globals.css";
-import Providers from "@/components/Providers";
+import Providers from "@/components/providers";
 
 // const sans = Open_Sans({
 //   variable: "--font-open-sans",

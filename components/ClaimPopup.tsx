@@ -1,8 +1,8 @@
 import {motion} from "motion/react";
-import {StrokeStyle, StrokeConfig} from "@/utils/constants";
 import {getTweetUrl} from "@/utils/tweet";
-import {XIcon} from "./XIcon";
+import {XIcon} from "@/components/icons/x";
 import Link from "next/link";
+import {StrokeConfig, StrokeStyle} from "@/app/types/signature";
 
 interface ClaimPopupProps {
   isOpen: boolean;

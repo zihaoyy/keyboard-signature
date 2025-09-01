@@ -1,17 +1,12 @@
 "use client";
 
 import {useEffect, useMemo, useRef, useState} from "react";
+import Link from "next/link";
 import {
-  KeyboardLayout,
-  CurveType,
   generatePath,
   getKeyboardLayout,
-  StrokeStyle,
-  StrokeConfig,
 } from "@/utils/constants";
 import {AnimatePresence, motion} from "motion/react";
-import {ColorPicker} from "@/components/ColorPicker";
-import {ClaimedPage} from "@/components/ClaimedPage";
 import {ClaimPopup} from "@/components/ClaimPopup";
 import {SignatureDetailModal} from "@/components/SignatureDetailModal";
 import type {ClaimedSignature} from "@/hooks/useSignatures";
@@ -23,7 +18,11 @@ import {
   useUnclaimSignature,
 } from "@/hooks/useSignaturesQuery";
 import {useDebounce} from "@/hooks/useDebounce";
-import {GithubIcon} from "./GithubIcon";
+import {GithubIcon} from "@/components/icons/github";
+import Options from "@/components/options";
+import {CurveType, KeyboardLayout, StrokeConfig, StrokeStyle} from "@/app/types/signature";
+import {handleGithubRedirect} from "@/utils/get-github";
+import Keyboard from "@/components/keyboard";
 
 const DEFAULT_STROKE_CONFIG = {
   style: StrokeStyle.SOLID,
@@ -43,11 +42,9 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
     useState<KeyboardLayout>(KeyboardLayout.QWERTY);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [curveType, setCurveType] = useState<CurveType>("linear");
-  const [optionsOpen, setOptionsOpen] = useState(false);
   const [includeNumbers, setIncludeNumbers] = useState(false);
   const [claimedBy, setClaimedBy] = useState<string | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showClaimedPage, setShowClaimedPage] = useState(false);
   const [showClaimPopup, setShowClaimPopup] = useState(false);
   const [showSearchInput, setShowSearchInput] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -72,19 +69,6 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
 
   const inputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-
-  const resetToDefaults = () => {
-    setCurrentKeyboardLayout(KeyboardLayout.QWERTY);
-    setCurveType("linear");
-    setIncludeNumbers(false);
-    setStrokeConfig({
-      style: StrokeStyle.SOLID,
-      color: "#ffffff",
-      gradientStart: "#ff6b6b",
-      gradientEnd: "#4ecdc4",
-      width: 3,
-    });
-  };
 
   useEffect(() => {
     // Match the existing signature
@@ -162,19 +146,6 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
     return generatePath(points, curveType);
   }, [name, currentKeyboardLayout, curveType, includeNumbers]); // Use name directly
 
-  const activeKeys = useMemo(() => {
-    const currentLayout = getKeyboardLayout(
-      currentKeyboardLayout,
-      includeNumbers
-    );
-    return new Set(
-      name
-      .toUpperCase()
-      .split("")
-      .filter((char) => char in currentLayout)
-    );
-  }, [name, currentKeyboardLayout, includeNumbers]); // Use name directly
-
   const handleLogin = async () => {
     await signInWithGithub();
   };
@@ -199,6 +170,12 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
     }
 
     setClaimError(null);
+
+    console.log(name,
+      signaturePath,
+      strokeConfig,
+      includeNumbers, 'asdasda')
+    return
 
     // Use React Query mutation to claim the signature
     claimSignatureMutation.mutate(
@@ -258,10 +235,6 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
     );
   };
 
-  const handleTwitterRedirect = (username: string) => {
-    window.open(`https://twitter.com/${username}`, "_blank");
-  };
-
   // Export functions
   const exportSVG = () => {
     if (!signaturePath || !name) return;
@@ -288,14 +261,10 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${name}-signature.svg`;
+    a.download = `${name.toLowerCase()}-signature.svg`;
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  if (showClaimedPage) {
-    return <ClaimedPage onBack={() => setShowClaimedPage(false)} user={user}/>;
-  }
 
   return (
     <div className="flex flex-col sm:items-center max-sm:mx-auto max-sm:w-[24rem] sm:w-fit h-screen justify-center">
@@ -551,15 +520,12 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
                   transition={{duration: 0.15, ease: [0.26, 1, 0.6, 1]}}
                   className="absolute right-0  gap-1 top-full mt-2 bg-neutral-950 border border-neutral-800 rounded-lg p-2 min-w-[120px]"
                 >
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      setShowClaimedPage(true);
-                    }}
+                  <Link
+                    href="/claimed"
                     className="whitespace-nowrap cursor-pointer block w-full text-left px-3 py-2 text-sm text-neutral-300 hover:text-white hover:bg-neutral-800/50 rounded-lg transition-all duration-150 hover:duration-50"
                   >
                     Claimed
-                  </button>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="text-red-400 cursor-pointer block w-full text-left px-3 py-2 text-sm hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all duration-150 hover:duration-50"
@@ -582,91 +548,7 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
         className="max-sm:mt-14 placeholder-neutral-800 leading-[1] [&::placeholder]:duration-200 [&::placeholder]:transition-all focus:placeholder-neutral-600 tracking-wide text-4xl text-white bg-transparent duration-150 transition-all ease-out px-4 py-2 text-center outline-none"
       />
 
-      <div className="relative mb-4 mt-8 max-sm:mt-0 max-sm:scale-70 max-sm:-ml-22">
-        <div
-          className={`relative transition-opacity ease-out ${
-            name.length < 2
-              ? "opacity-100"
-              : keyboardVisible
-                ? "opacity-100 brightness-125 duration-50"
-                : "opacity-0 duration-4000"
-          }`}
-          style={{width: "650px", height: includeNumbers ? "260px" : "200px"}}
-        >
-          {Object.entries(
-            getKeyboardLayout(currentKeyboardLayout, includeNumbers)
-          ).map(([char, pos]) => {
-            const isActive = activeKeys.has(char);
-            const isCurrentKey =
-              name.length > 0 && name.toUpperCase()[name.length - 1] === char;
-
-            return (
-              <div
-                key={char}
-                onClick={() => setName((p) => p + char)}
-                className={`absolute w-14 h-12 rounded-lg border flex items-center justify-center text-sm font-mono transition-[transform,color,background-color,border-color] duration-200 active:scale-95 ${
-                  isCurrentKey
-                    ? "bg-white/50 border-neutral-400 text-black scale-110"
-                    : isActive
-                      ? "bg-neutral-900 border-neutral-800 text-white"
-                      : "bg-transparent border-neutral-800/50 text-neutral-300"
-                }`}
-                style={{
-                  left: `${pos.x * 60}px`,
-                  top: `${pos.y * 60 + (includeNumbers ? 75 : 15)}px`,
-                }}
-              >
-                {char}
-              </div>
-            );
-          })}
-        </div>
-
-        <svg
-          className="pointer-events-none absolute top-0 left-0"
-          width="650"
-          height={includeNumbers ? "260" : "200"}
-          style={{zIndex: 10}}
-        >
-          <defs>
-            {strokeConfig.style === StrokeStyle.GRADIENT && (
-              <linearGradient
-                id="pathGradient"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="0%"
-              >
-                <stop
-                  offset="0%"
-                  stopColor={strokeConfig.gradientStart}
-                  stopOpacity={1}
-                />
-                <stop
-                  offset="100%"
-                  stopColor={strokeConfig.gradientEnd}
-                  stopOpacity={1}
-                />
-              </linearGradient>
-            )}
-          </defs>
-
-          {signaturePath ? (
-            <path
-              d={signaturePath}
-              stroke={
-                strokeConfig.style === StrokeStyle.SOLID
-                  ? strokeConfig.color
-                  : "url(#pathGradient)"
-              }
-              strokeWidth={strokeConfig.width}
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          ) : null}
-        </svg>
-      </div>
+      <Keyboard name={name} setName={setName} keyboardVisible={keyboardVisible}/>
 
       <div
         className={`max-sm:w-[20rem] max-sm:mx-auto flex flex-col gap-6 sm:mt-8 transition-all ease-in-out ${
@@ -688,7 +570,7 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
             className="flex items-center justify-center gap-1 font-medium text-neutral-500 border border-neutral-700/50 px-3.5 py-1.5 bg-neutral-900/50 text-sm rounded-md">
             <span>Claimed by</span>
             <button
-              onClick={() => handleTwitterRedirect(claimedBy)}
+              onClick={() => handleGithubRedirect(claimedBy)}
               className="text-blue-400 hover:text-blue-300 transition-colors duration-100 cursor-pointer"
             >
               @{claimedBy}
@@ -711,229 +593,16 @@ export const KeyboardSignature = ({allowedClaimCount = 1}: KeyboardSignatureProp
           </button>
         )}
 
-          <button
-            type="button"
-            onClick={exportSVG}
-            className="cursor-pointer relative inline-flex items-center justify-center select-none rounded-2xl disabled:cursor-not-allowed ease-in-out text-gray-500 border-[2px] border-white/5 bg-white/5 shadow-sm not-disabled:hover:bg-white/10 not-disabled:hover:text-white/50 not-disabled:hover:shadow-button transition-all duration-200 disabled:opacity-30 disabled:text-white/50 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/20 focus-visible:text-black text-base h-12 gap-0 px-5 font-semibold"
-          >
-            Download
-          </button>
+        <button
+          type="button"
+          onClick={exportSVG}
+          className="cursor-pointer relative inline-flex items-center justify-center select-none rounded-2xl disabled:cursor-not-allowed ease-in-out text-gray-500 border-[2px] border-white/5 bg-white/5 shadow-sm not-disabled:hover:bg-white/10 not-disabled:hover:text-white/50 not-disabled:hover:shadow-button transition-all duration-200 disabled:opacity-30 disabled:text-white/50 focus-visible:ring-4 focus-visible:ring-white/30 focus-visible:outline-hidden focus-visible:bg-white/20 focus-visible:text-black text-base h-12 gap-0 px-5 font-semibold"
+        >
+          Download
+        </button>
       </div>
 
-      <AnimatePresence>
-        {optionsOpen ? (
-          <motion.div
-            initial={{y: 4, opacity: 0}}
-            animate={{y: 0, opacity: 1}}
-            exit={{y: 4, opacity: 0}}
-            transition={{
-              duration: 0.4,
-              ease: [0.6, 1, 0.26, 1],
-            }}
-            className="flex flex-col items-start max-sm:-translate-x-1/2 max-sm:left-1/2 max-sm:w-[calc(100%-3rem)] sm:max-w-xs absolute sm:right-6 bottom-6 p-4 rounded-xl bg-neutral-950 border-neutral-800/50 border z-10"
-          >
-            <button
-              onClick={() => setOptionsOpen(false)}
-              className="text-sm text-neutral-600 hover:text-neutral-400 absolute right-4 top-4 cursor-pointer"
-            >
-              Close
-            </button>
-
-            <p className="font-semibold text-neutral-400 mb-4">Options</p>
-
-            <div className="grid grid-cols-[5rem_1fr] gap-y-4">
-              {/* Layout */}
-              <label
-                htmlFor="keyboard-layout"
-                className="text-neutral-300 text-sm font-medium mr-8 mt-1"
-              >
-                Layout
-              </label>
-              <select
-                id="keyboard-layout"
-                className="border border-neutral-800 rounded-md px-2 py-1 bg-neutral-900 text-white text-sm"
-                value={currentKeyboardLayout}
-                onChange={(e) => {
-                  setCurrentKeyboardLayout(e.target.value as KeyboardLayout);
-                }}
-              >
-                {Object.values(KeyboardLayout).map((layout) => (
-                  <option
-                    key={layout}
-                    value={layout}
-                    className="text-neutral-500"
-                  >
-                    {layout}
-                  </option>
-                ))}
-              </select>
-
-              {/* Curve */}
-              <p className="text-neutral-300 text-sm font-medium mr-8 mt-1">
-                Curve
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {(
-                  [
-                    "linear",
-                    "simple-curve",
-                    "quadratic-bezier",
-                    "cubic-bezier",
-                    "catmull-rom",
-                  ] as CurveType[]
-                ).map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => setCurveType(type)}
-                    className={`px-3 py-1 text-xs rounded-full transition-all duration-150 ease-out cursor-pointer border ${
-                      curveType === type
-                        ? "bg-white text-black font-medium border-white"
-                        : "bg-neutral-900/50 text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-200 border-neutral-800"
-                    }`}
-                  >
-                    {type.replace("-", " ")}
-                  </button>
-                ))}
-              </div>
-
-              {/* Numbers Toggle */}
-              <p className="text-neutral-300 text-sm font-medium mr-8">
-                Numbers
-              </p>
-              <label className="flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={includeNumbers}
-                  onChange={(e) => setIncludeNumbers(e.target.checked)}
-                  className="sr-only"
-                />
-                <div
-                  className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
-                    includeNumbers ? "bg-white" : "bg-neutral-700"
-                  }`}
-                >
-                  <div
-                    className={`absolute top-0.5 left-0.5 w-4 h-4 bg-black rounded-full transition-transform duration-200 ${
-                      includeNumbers ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  />
-                </div>
-              </label>
-
-              {/* Color Style */}
-              <p className="text-neutral-300 text-sm font-medium mr-8 mt-1">
-                Style
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {Object.values(StrokeStyle).map((style) => (
-                  <button
-                    key={style}
-                    onClick={() =>
-                      setStrokeConfig((prev) => ({...prev, style}))
-                    }
-                    className={`px-3 py-1 text-xs rounded-full transition-all duration-150 ease-out cursor-pointer border ${
-                      strokeConfig.style === style
-                        ? "bg-white text-black font-medium border-white"
-                        : "bg-neutral-900/50 text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-200 border-neutral-800"
-                    }`}
-                  >
-                    {style}
-                  </button>
-                ))}
-              </div>
-
-              {/* Color Picker */}
-              {strokeConfig.style === StrokeStyle.SOLID && (
-                <>
-                  <p className="text-neutral-300 text-sm font-medium mr-8 mt-1">
-                    Color
-                  </p>
-                  <ColorPicker
-                    value={strokeConfig.color}
-                    onChange={(color) =>
-                      setStrokeConfig((prev) => ({...prev, color}))
-                    }
-                  />
-                </>
-              )}
-
-              {/* Gradient Colors */}
-              {strokeConfig.style === StrokeStyle.GRADIENT && (
-                <>
-                  <p className="text-neutral-300 text-sm font-medium mr-8 mt-1">
-                    Colors
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <ColorPicker
-                      value={strokeConfig.gradientStart}
-                      onChange={(color) =>
-                        setStrokeConfig((prev) => ({
-                          ...prev,
-                          gradientStart: color,
-                        }))
-                      }
-                    />
-                    <ColorPicker
-                      value={strokeConfig.gradientEnd}
-                      onChange={(color) =>
-                        setStrokeConfig((prev) => ({
-                          ...prev,
-                          gradientEnd: color,
-                        }))
-                      }
-                    />
-                  </div>
-                </>
-              )}
-
-              {/* Stroke Width */}
-              <p className="text-neutral-300 text-sm font-medium mr-8 mt-1">
-                Width
-              </p>
-              <div className="flex items-center gap-2">
-                <input
-                  type="range"
-                  min="1"
-                  max="8"
-                  value={strokeConfig.width}
-                  onChange={(e) =>
-                    setStrokeConfig((prev) => ({
-                      ...prev,
-                      width: parseInt(e.target.value),
-                    }))
-                  }
-                  className="flex-1"
-                />
-                <span className="text-neutral-400 text-xs w-6">
-                  {strokeConfig.width}px
-                </span>
-              </div>
-            </div>
-
-            {/* Reset Button */}
-            <button
-              onClick={resetToDefaults}
-              className="mt-4 w-full px-3 py-2 text-sm bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white rounded-md transition-colors duration-150 border border-neutral-700 cursor-pointer"
-            >
-              Reset to Defaults
-            </button>
-          </motion.div>
-        ) : (
-          <motion.button
-            onClick={() => setOptionsOpen(true)}
-            className="absolute bottom-6 right-6 px-4 py-2 rounded-lg bg-neutral-950 border-neutral-800/50 border cursor-pointer text-sm font-medium text-neutral-200"
-            initial={{y: -4, opacity: 0}}
-            animate={{y: 0, opacity: 1}}
-            exit={{y: -4, opacity: 0}}
-            transition={{
-              duration: 0.4,
-              ease: [0.6, 1, 0.26, 1],
-            }}
-          >
-            Options
-          </motion.button>
-        )}
-      </AnimatePresence>
+      <Options/>
 
       <AnimatePresence>
         {showClaimPopup && (
