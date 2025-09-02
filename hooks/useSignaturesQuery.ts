@@ -1,30 +1,31 @@
-import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import {
   claimSignatureAction,
   getSignatureByNameAction,
   getClaimedSignaturesAction,
   getUserClaimedSignaturesAction,
   unclaimSignatureAction,
-} from "@/utils/actions";
-import {StrokeConfig} from "@/utils/constants";
-import type {ClaimedSignature} from "@/hooks/useSignatures";
-import {UnclaimSignatureParams} from "@/app/api/signatures/unclaim/route";
+} from '@/utils/actions';
+import {UnclaimSignatureParams} from '@/app/api/signatures/unclaim/route';
+import {ClaimedSignature, CurveType, KeyboardLayout, StrokeConfig} from '@/types/signature';
 
 export interface ClaimSignatureParams {
   name: string;
   signaturePath: string;
   strokeConfig: StrokeConfig;
   includeNumbers: boolean;
+  curveType: CurveType;
+  keyboardLayout: KeyboardLayout;
 }
 
 // Query keys
 export const signatureKeys = {
-  all: ["signatures"] as const,
-  lists: () => [...signatureKeys.all, "list"] as const,
+  all: ['signatures'] as const,
+  lists: () => [...signatureKeys.all, 'list'] as const,
   list: (filters: string) => [...signatureKeys.lists(), {filters}] as const,
-  details: () => [...signatureKeys.all, "detail"] as const,
+  details: () => [...signatureKeys.all, 'detail'] as const,
   detail: (name: string) => [...signatureKeys.details(), name] as const,
-  user: () => [...signatureKeys.all, "user"] as const,
+  user: () => [...signatureKeys.all, 'user'] as const,
 };
 
 // Hook to get all claimed signatures
@@ -70,7 +71,7 @@ export const useClaimSignature = () => {
       }
     },
     onError: (error) => {
-      console.error("Error claiming signature:", error);
+      console.error('Error claiming signature:', error);
     },
   });
 };
@@ -91,7 +92,7 @@ export const useUnclaimSignature = () => {
       }
     },
     onError: (error) => {
-      console.error("Error claiming signature:", error);
+      console.error('Error claiming signature:', error);
     },
   });
 };

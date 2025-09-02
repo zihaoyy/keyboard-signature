@@ -1,8 +1,8 @@
-import {getSignatureByNameAction} from "@/utils/actions";
-import {ImageResponse} from "@vercel/og";
-import {NextResponse} from "next/server";
+import {getSignatureByNameAction} from '@/utils/actions';
+import {ImageResponse} from '@vercel/og';
+import {NextResponse} from 'next/server';
 
-export const runtime = "edge";
+export const runtime = 'edge';
 
 export const contentType = 'image/png';
 
@@ -16,26 +16,26 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
 
     // Validate and sanitize input
     if (!name) {
-      return NextResponse.json({message: "Invalid signature name"}, {
+      return NextResponse.json({message: 'Invalid signature name'}, {
         status: 400,
-        headers: {"Content-Type": "application/json"},
+        headers: {'Content-Type': 'application/json'},
       });
     }
     // Sanitize name - only allow alphanumeric characters and spaces
     const sanitizedName = name.replace(/[^a-zA-Z0-9\s]/g, "").trim();
     if (!sanitizedName) {
-      return NextResponse.json({message: "Invalid signature name"}, {
+      return NextResponse.json({message: 'Invalid signature name'}, {
         status: 400,
-        headers: {"Content-Type": "application/json"},
+        headers: {'Content-Type': 'application/json'},
       });
     }
 
     // Get signature data
     const signature = await getSignatureByNameAction(sanitizedName);
     if (!signature) {
-      return NextResponse.json({message: "Signature not found"}, {
+      return NextResponse.json({message: 'Signature not found'}, {
         status: 404,
-        headers: {"Content-Type": "application/json"},
+        headers: {'Content-Type': 'application/json'},
       });
     }
 
@@ -48,30 +48,30 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
           style={{
             width: 650,
             height,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#000000",
-            position: "relative",
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#000000',
+            position: 'relative',
           }}
         >
           <svg
-            width="650"
+            width='650'
             height={height.toString()}
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns='http://www.w3.org/2000/svg'
           >
             <title>Signature for {sanitizedName}</title>
-            <rect width="650" height={height.toString()} fill="#000000"/>
-            {signature.stroke_config.style === "gradient" && (
+            <rect width='650' height={height.toString()} fill='#000000'/>
+            {signature.stroke_config.style === 'gradient' && (
               <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <linearGradient id='gradient' x1='0%' y1='0%' x2='100%' y2='0%'>
                   <stop
-                    offset="0%"
+                    offset='0%'
                     stopColor={signature.stroke_config.gradientStart}
                     stopOpacity={1}
                   />
                   <stop
-                    offset="100%"
+                    offset='100%'
                     stopColor={signature.stroke_config.gradientEnd}
                     stopOpacity={1}
                   />
@@ -81,14 +81,14 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
             <path
               d={signature.signature_path}
               stroke={
-                signature.stroke_config.style === "solid"
+                signature.stroke_config.style === 'solid'
                   ? signature.stroke_config.color
-                  : "url(#gradient)"
+                  : 'url(#gradient)'
               }
               strokeWidth={signature.stroke_config.width}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              fill='none'
             />
           </svg>
         </div>
@@ -99,10 +99,10 @@ export async function GET(request: Request, {params}: SignatureImageProps) {
       }
     );
   } catch (error) {
-    console.error("Error generating signature image:", error);
-    return NextResponse.json({message: "Failed to generate image"}, {
+    console.error('Error generating signature image:', error);
+    return NextResponse.json({message: 'Failed to generate image'}, {
       status: 500,
-      headers: {"Content-Type": "application/json"},
+      headers: {'Content-Type': 'application/json'},
     });
   }
 }

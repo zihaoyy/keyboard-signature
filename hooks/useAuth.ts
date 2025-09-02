@@ -1,6 +1,6 @@
-import {useState, useEffect} from "react";
-import {User} from "@supabase/supabase-js";
-import {createSupabaseBrowserClient} from "@/utils/supabase/client";
+import {useState, useEffect} from 'react';
+import {User} from '@supabase/supabase-js';
+import {createSupabaseBrowserClient} from '@/utils/supabase/client';
 
 export interface AuthUser {
   id: string;
@@ -51,7 +51,7 @@ export const useAuth = () => {
         userMetadata.user_name ||
         userMetadata.preferred_username ||
         userMetadata.screen_name ||
-        "user",
+        'user',
       profilePic:
         userMetadata.avatar_url ||
         userMetadata.picture ||
@@ -63,20 +63,20 @@ export const useAuth = () => {
 
   const signInWithGithub = async () => {
     const {error} = await supabase.auth.signInWithOAuth({
-      provider: "github",
+      provider: 'github',
       options: {
         redirectTo: process.env.NEXT_PUBLIC_URL,
       },
     });
     if (error) {
-      console.error("Error signing in:", error.message);
+      console.error('Error signing in:', error.message);
     }
   };
 
   const signOut = async () => {
     const {error} = await supabase.auth.signOut();
     if (error) {
-      console.error("Error signing out:", error.message);
+      console.error('Error signing out:', error.message);
     }
   };
 

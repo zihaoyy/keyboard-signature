@@ -1,14 +1,14 @@
-import {ClaimSignatureParams} from "@/app/api/signatures/claim/route";
-import {UnclaimSignatureParams} from "@/app/api/signatures/unclaim/route";
+import {ClaimSignatureParams} from '@/app/api/signatures/claim/route';
+import {UnclaimSignatureParams} from '@/app/api/signatures/unclaim/route';
 
 // For client-side use, we'll use the existing supabase client
 // Server-side operations will be handled through API endpoints
 export async function claimSignatureAction(params: ClaimSignatureParams) {
   // This function is now a client-side wrapper that calls the API
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/signatures/claim`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(params),
   });
@@ -17,7 +17,7 @@ export async function claimSignatureAction(params: ClaimSignatureParams) {
     const error = await response.json();
     return {
       success: false,
-      error: error.message || "Failed to claim signature",
+      error: error.message || 'Failed to claim signature',
     };
   }
 
@@ -30,12 +30,12 @@ export async function unclaimSignatureAction(params: UnclaimSignatureParams) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/signatures/unclaim`,
     {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(params),
-      credentials: "include",
+      credentials: 'include',
     }
   );
 
@@ -43,7 +43,7 @@ export async function unclaimSignatureAction(params: UnclaimSignatureParams) {
     const error = await response.json();
     return {
       success: false,
-      error: error.message || "Failed to claim signature",
+      error: error.message || 'Failed to claim signature',
     };
   }
 

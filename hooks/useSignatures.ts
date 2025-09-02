@@ -1,31 +1,19 @@
-import {useCallback, useEffect, useState} from "react";
-import {claimSignatureAction, getClaimedSignaturesAction, getSignatureByNameAction,} from "@/utils/actions";
-import {StrokeConfig} from "@/utils/constants";
+import {useCallback, useEffect, useState} from 'react';
+import {claimSignatureAction, getClaimedSignaturesAction, getSignatureByNameAction,} from '@/utils/actions';
+import {ClaimedSignature, StrokeConfig} from '@/types/signature';
 
-export interface ClaimedSignature {
-  id: string;
-  name: string;
-  signature_path: string;
-  claimed_by_user_id: string;
-  claimed_by_username: string;
-  claimed_by_avatar: string | null;
-  created_at: string;
-  stroke_config: StrokeConfig;
-  include_numbers: boolean;
-}
 
 export const useSignatures = () => {
-  const [claimedSignatures, setClaimedSignatures] = useState<
-    ClaimedSignature[]
-  >([]);
+  const [claimedSignatures, setClaimedSignatures] = useState<ClaimedSignature[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchClaimedSignatures = useCallback(async () => {
     try {
       const data = await getClaimedSignaturesAction();
+      console.log(data, 'data');
       setClaimedSignatures(data);
     } catch (error) {
-      console.error("Error fetching signatures:", error);
+      console.error('Error fetching signatures:', error);
     } finally {
       setIsLoading(false);
     }
@@ -65,8 +53,8 @@ export const useSignatures = () => {
 
       return {success: true, data: result.data};
     } catch (error) {
-      console.error("Error claiming signature:", error);
-      return {success: false, message: "claim_failed"};
+      console.error('Error claiming signature:', error);
+      return {success: false, message: 'claim_failed'};
     }
   };
 
@@ -74,7 +62,7 @@ export const useSignatures = () => {
     try {
       return await getSignatureByNameAction(name);
     } catch (error) {
-      console.error("Error fetching signature:", error);
+      console.error('Error fetching signature:', error);
       return null;
     }
   };

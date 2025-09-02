@@ -1,4 +1,4 @@
-import {CurveType, KeyboardLayout, StrokeConfig, StrokeStyle} from "@/app/types/signature";
+import {CurveType, KeyboardLayout, StrokeConfig, StrokeStyle} from '@/types/signature';
 
 export type Key = {
   x: number;
@@ -6,16 +6,16 @@ export type Key = {
 };
 
 export const numberRow: Record<string, Key> = {
-  "1": {x: 0.5, y: -1},
-  "2": {x: 1.5, y: -1},
-  "3": {x: 2.5, y: -1},
-  "4": {x: 3.5, y: -1},
-  "5": {x: 4.5, y: -1},
-  "6": {x: 5.5, y: -1},
-  "7": {x: 6.5, y: -1},
-  "8": {x: 7.5, y: -1},
-  "9": {x: 8.5, y: -1},
-  "0": {x: 9.5, y: -1},
+  '1': {x: 0.5, y: -1},
+  '2': {x: 1.5, y: -1},
+  '3': {x: 2.5, y: -1},
+  '4': {x: 3.5, y: -1},
+  '5': {x: 4.5, y: -1},
+  '6': {x: 5.5, y: -1},
+  '7': {x: 6.5, y: -1},
+  '8': {x: 7.5, y: -1},
+  '9': {x: 8.5, y: -1},
+  '0': {x: 9.5, y: -1},
 };
 
 export const keyboardLayouts: Record<KeyboardLayout, Record<string, Key>> = {
@@ -82,9 +82,9 @@ export const keyboardLayouts: Record<KeyboardLayout, Record<string, Key>> = {
   },
 
   [KeyboardLayout.DVORAK]: {
-    "'": {x: 0.5, y: 0},
-    ",": {x: 1.5, y: 0},
-    ".": {x: 2.5, y: 0},
+    ''': {x: 0.5, y: 0},
+    ',': {x: 1.5, y: 0},
+    '.': {x: 2.5, y: 0},
     P: {x: 3.5, y: 0},
     Y: {x: 4.5, y: 0},
     F: {x: 5.5, y: 0},
@@ -104,7 +104,7 @@ export const keyboardLayouts: Record<KeyboardLayout, Record<string, Key>> = {
     N: {x: 8.75, y: 1},
     S: {x: 9.75, y: 1},
 
-    ";": {x: 1.25, y: 2},
+    ';': {x: 1.25, y: 2},
     Q: {x: 2.25, y: 2},
     J: {x: 3.25, y: 2},
     K: {x: 4.25, y: 2},
@@ -303,9 +303,9 @@ export const generatePath = (points: Key[], curveType: CurveType): string => {
 export const generateSVGGradients = (strokeConfig: StrokeConfig): string => {
   if (strokeConfig.style === StrokeStyle.GRADIENT) {
     return `
-      <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:${strokeConfig.gradientStart};stop-opacity:1" />
-        <stop offset="100%" style="stop-color:${strokeConfig.gradientEnd};stop-opacity:1" />
+      <linearGradient id='pathGradient' x1='0%' y1='0%' x2='100%' y2='0%'>
+        <stop offset='0%' style='stop-color:${strokeConfig.gradientStart};stop-opacity:1' />
+        <stop offset='100%' style='stop-color:${strokeConfig.gradientEnd};stop-opacity:1' />
       </linearGradient>
     `;
   }
