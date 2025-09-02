@@ -1,183 +1,178 @@
+import {CurveType, KeyboardLayout, StrokeConfig, StrokeStyle} from '@/types/signature';
+
 export type Key = {
   x: number;
   y: number;
 };
-export enum KeyboardLayout {
-  QWERTY = "qwerty",
-  COLEMAK = "colemak",
-  DVORAK = "dvorak",
-  AZERTY = "azerty",
-  ABCDEF = "abcdef",
-}
 
 export const numberRow: Record<string, Key> = {
-  "1": { x: 0.5, y: -1 },
-  "2": { x: 1.5, y: -1 },
-  "3": { x: 2.5, y: -1 },
-  "4": { x: 3.5, y: -1 },
-  "5": { x: 4.5, y: -1 },
-  "6": { x: 5.5, y: -1 },
-  "7": { x: 6.5, y: -1 },
-  "8": { x: 7.5, y: -1 },
-  "9": { x: 8.5, y: -1 },
-  "0": { x: 9.5, y: -1 },
+  '1': {x: 0.5, y: -1},
+  '2': {x: 1.5, y: -1},
+  '3': {x: 2.5, y: -1},
+  '4': {x: 3.5, y: -1},
+  '5': {x: 4.5, y: -1},
+  '6': {x: 5.5, y: -1},
+  '7': {x: 6.5, y: -1},
+  '8': {x: 7.5, y: -1},
+  '9': {x: 8.5, y: -1},
+  '0': {x: 9.5, y: -1},
 };
 
 export const keyboardLayouts: Record<KeyboardLayout, Record<string, Key>> = {
   [KeyboardLayout.QWERTY]: {
-    Q: { x: 0.5, y: 0 },
-    W: { x: 1.5, y: 0 },
-    E: { x: 2.5, y: 0 },
-    R: { x: 3.5, y: 0 },
-    T: { x: 4.5, y: 0 },
-    Y: { x: 5.5, y: 0 },
-    U: { x: 6.5, y: 0 },
-    I: { x: 7.5, y: 0 },
-    O: { x: 8.5, y: 0 },
-    P: { x: 9.5, y: 0 },
+    Q: {x: 0.5, y: 0},
+    W: {x: 1.5, y: 0},
+    E: {x: 2.5, y: 0},
+    R: {x: 3.5, y: 0},
+    T: {x: 4.5, y: 0},
+    Y: {x: 5.5, y: 0},
+    U: {x: 6.5, y: 0},
+    I: {x: 7.5, y: 0},
+    O: {x: 8.5, y: 0},
+    P: {x: 9.5, y: 0},
 
-    A: { x: 0.75, y: 1 },
-    S: { x: 1.75, y: 1 },
-    D: { x: 2.75, y: 1 },
-    F: { x: 3.75, y: 1 },
-    G: { x: 4.75, y: 1 },
-    H: { x: 5.75, y: 1 },
-    J: { x: 6.75, y: 1 },
-    K: { x: 7.75, y: 1 },
-    L: { x: 8.75, y: 1 },
+    A: {x: 0.75, y: 1},
+    S: {x: 1.75, y: 1},
+    D: {x: 2.75, y: 1},
+    F: {x: 3.75, y: 1},
+    G: {x: 4.75, y: 1},
+    H: {x: 5.75, y: 1},
+    J: {x: 6.75, y: 1},
+    K: {x: 7.75, y: 1},
+    L: {x: 8.75, y: 1},
 
-    Z: { x: 1.25, y: 2 },
-    X: { x: 2.25, y: 2 },
-    C: { x: 3.25, y: 2 },
-    V: { x: 4.25, y: 2 },
-    B: { x: 5.25, y: 2 },
-    N: { x: 6.25, y: 2 },
-    M: { x: 7.25, y: 2 },
+    Z: {x: 1.25, y: 2},
+    X: {x: 2.25, y: 2},
+    C: {x: 3.25, y: 2},
+    V: {x: 4.25, y: 2},
+    B: {x: 5.25, y: 2},
+    N: {x: 6.25, y: 2},
+    M: {x: 7.25, y: 2},
   },
 
   [KeyboardLayout.COLEMAK]: {
-    Q: { x: 0.5, y: 0 },
-    W: { x: 1.5, y: 0 },
-    F: { x: 2.5, y: 0 },
-    P: { x: 3.5, y: 0 },
-    G: { x: 4.5, y: 0 },
-    J: { x: 5.5, y: 0 },
-    L: { x: 6.5, y: 0 },
-    U: { x: 7.5, y: 0 },
-    Y: { x: 8.5, y: 0 },
+    Q: {x: 0.5, y: 0},
+    W: {x: 1.5, y: 0},
+    F: {x: 2.5, y: 0},
+    P: {x: 3.5, y: 0},
+    G: {x: 4.5, y: 0},
+    J: {x: 5.5, y: 0},
+    L: {x: 6.5, y: 0},
+    U: {x: 7.5, y: 0},
+    Y: {x: 8.5, y: 0},
 
-    A: { x: 0.75, y: 1 },
-    R: { x: 1.75, y: 1 },
-    S: { x: 2.75, y: 1 },
-    T: { x: 3.75, y: 1 },
-    D: { x: 4.75, y: 1 },
-    H: { x: 5.75, y: 1 },
-    N: { x: 6.75, y: 1 },
-    E: { x: 7.75, y: 1 },
-    I: { x: 8.75, y: 1 },
-    O: { x: 9.75, y: 1 },
+    A: {x: 0.75, y: 1},
+    R: {x: 1.75, y: 1},
+    S: {x: 2.75, y: 1},
+    T: {x: 3.75, y: 1},
+    D: {x: 4.75, y: 1},
+    H: {x: 5.75, y: 1},
+    N: {x: 6.75, y: 1},
+    E: {x: 7.75, y: 1},
+    I: {x: 8.75, y: 1},
+    O: {x: 9.75, y: 1},
 
-    Z: { x: 1.25, y: 2 },
-    X: { x: 2.25, y: 2 },
-    C: { x: 3.25, y: 2 },
-    V: { x: 4.25, y: 2 },
-    B: { x: 5.25, y: 2 },
-    K: { x: 6.25, y: 2 },
-    M: { x: 7.25, y: 2 },
+    Z: {x: 1.25, y: 2},
+    X: {x: 2.25, y: 2},
+    C: {x: 3.25, y: 2},
+    V: {x: 4.25, y: 2},
+    B: {x: 5.25, y: 2},
+    K: {x: 6.25, y: 2},
+    M: {x: 7.25, y: 2},
   },
 
   [KeyboardLayout.DVORAK]: {
-    "'": { x: 0.5, y: 0 },
-    ",": { x: 1.5, y: 0 },
-    ".": { x: 2.5, y: 0 },
-    P: { x: 3.5, y: 0 },
-    Y: { x: 4.5, y: 0 },
-    F: { x: 5.5, y: 0 },
-    G: { x: 6.5, y: 0 },
-    C: { x: 7.5, y: 0 },
-    R: { x: 8.5, y: 0 },
-    L: { x: 9.5, y: 0 },
+    ''': {x: 0.5, y: 0},
+    ',': {x: 1.5, y: 0},
+    '.': {x: 2.5, y: 0},
+    P: {x: 3.5, y: 0},
+    Y: {x: 4.5, y: 0},
+    F: {x: 5.5, y: 0},
+    G: {x: 6.5, y: 0},
+    C: {x: 7.5, y: 0},
+    R: {x: 8.5, y: 0},
+    L: {x: 9.5, y: 0},
 
-    A: { x: 0.75, y: 1 },
-    O: { x: 1.75, y: 1 },
-    E: { x: 2.75, y: 1 },
-    U: { x: 3.75, y: 1 },
-    I: { x: 4.75, y: 1 },
-    D: { x: 5.75, y: 1 },
-    H: { x: 6.75, y: 1 },
-    T: { x: 7.75, y: 1 },
-    N: { x: 8.75, y: 1 },
-    S: { x: 9.75, y: 1 },
+    A: {x: 0.75, y: 1},
+    O: {x: 1.75, y: 1},
+    E: {x: 2.75, y: 1},
+    U: {x: 3.75, y: 1},
+    I: {x: 4.75, y: 1},
+    D: {x: 5.75, y: 1},
+    H: {x: 6.75, y: 1},
+    T: {x: 7.75, y: 1},
+    N: {x: 8.75, y: 1},
+    S: {x: 9.75, y: 1},
 
-    ";": { x: 1.25, y: 2 },
-    Q: { x: 2.25, y: 2 },
-    J: { x: 3.25, y: 2 },
-    K: { x: 4.25, y: 2 },
-    X: { x: 5.25, y: 2 },
-    B: { x: 6.25, y: 2 },
-    M: { x: 7.25, y: 2 },
-    W: { x: 8.25, y: 2 },
-    V: { x: 9.25, y: 2 },
-    Z: { x: 10.25, y: 2 },
+    ';': {x: 1.25, y: 2},
+    Q: {x: 2.25, y: 2},
+    J: {x: 3.25, y: 2},
+    K: {x: 4.25, y: 2},
+    X: {x: 5.25, y: 2},
+    B: {x: 6.25, y: 2},
+    M: {x: 7.25, y: 2},
+    W: {x: 8.25, y: 2},
+    V: {x: 9.25, y: 2},
+    Z: {x: 10.25, y: 2},
   },
 
   [KeyboardLayout.AZERTY]: {
-    A: { x: 0.5, y: 0 },
-    Z: { x: 1.5, y: 0 },
-    E: { x: 2.5, y: 0 },
-    R: { x: 3.5, y: 0 },
-    T: { x: 4.5, y: 0 },
-    Y: { x: 5.5, y: 0 },
-    U: { x: 6.5, y: 0 },
-    I: { x: 7.5, y: 0 },
-    O: { x: 8.5, y: 0 },
-    P: { x: 9.5, y: 0 },
+    A: {x: 0.5, y: 0},
+    Z: {x: 1.5, y: 0},
+    E: {x: 2.5, y: 0},
+    R: {x: 3.5, y: 0},
+    T: {x: 4.5, y: 0},
+    Y: {x: 5.5, y: 0},
+    U: {x: 6.5, y: 0},
+    I: {x: 7.5, y: 0},
+    O: {x: 8.5, y: 0},
+    P: {x: 9.5, y: 0},
 
-    Q: { x: 0.75, y: 1 },
-    S: { x: 1.75, y: 1 },
-    D: { x: 2.75, y: 1 },
-    F: { x: 3.75, y: 1 },
-    G: { x: 4.75, y: 1 },
-    H: { x: 5.75, y: 1 },
-    J: { x: 6.75, y: 1 },
-    K: { x: 7.75, y: 1 },
-    L: { x: 8.75, y: 1 },
-    M: { x: 9.75, y: 1 },
+    Q: {x: 0.75, y: 1},
+    S: {x: 1.75, y: 1},
+    D: {x: 2.75, y: 1},
+    F: {x: 3.75, y: 1},
+    G: {x: 4.75, y: 1},
+    H: {x: 5.75, y: 1},
+    J: {x: 6.75, y: 1},
+    K: {x: 7.75, y: 1},
+    L: {x: 8.75, y: 1},
+    M: {x: 9.75, y: 1},
 
-    W: { x: 1.25, y: 2 },
-    X: { x: 2.25, y: 2 },
-    C: { x: 3.25, y: 2 },
-    V: { x: 4.25, y: 2 },
-    B: { x: 5.25, y: 2 },
-    N: { x: 6.25, y: 2 },
+    W: {x: 1.25, y: 2},
+    X: {x: 2.25, y: 2},
+    C: {x: 3.25, y: 2},
+    V: {x: 4.25, y: 2},
+    B: {x: 5.25, y: 2},
+    N: {x: 6.25, y: 2},
   },
   [KeyboardLayout.ABCDEF]: {
-    A: { x: 0.5, y: 0 },
-    B: { x: 1.5, y: 0 },
-    C: { x: 2.5, y: 0 },
-    D: { x: 3.5, y: 0 },
-    E: { x: 4.5, y: 0 },
-    F: { x: 5.5, y: 0 },
-    G: { x: 6.5, y: 0 },
-    H: { x: 7.5, y: 0 },
-    I: { x: 8.5, y: 0 },
-    J: { x: 9.5, y: 0 },
-    K: { x: 0.75, y: 1 },
-    L: { x: 1.75, y: 1 },
-    M: { x: 2.75, y: 1 },
-    N: { x: 3.75, y: 1 },
-    O: { x: 4.75, y: 1 },
-    P: { x: 5.75, y: 1 },
-    Q: { x: 6.75, y: 1 },
-    R: { x: 7.75, y: 1 },
-    S: { x: 8.75, y: 1 },
-    T: { x: 1.25, y: 2 },
-    U: { x: 2.25, y: 2 },
-    V: { x: 3.25, y: 2 },
-    W: { x: 4.25, y: 2 },
-    X: { x: 5.25, y: 2 },
-    Y: { x: 6.25, y: 2 },
-    Z: { x: 7.25, y: 2 },
+    A: {x: 0.5, y: 0},
+    B: {x: 1.5, y: 0},
+    C: {x: 2.5, y: 0},
+    D: {x: 3.5, y: 0},
+    E: {x: 4.5, y: 0},
+    F: {x: 5.5, y: 0},
+    G: {x: 6.5, y: 0},
+    H: {x: 7.5, y: 0},
+    I: {x: 8.5, y: 0},
+    J: {x: 9.5, y: 0},
+    K: {x: 0.75, y: 1},
+    L: {x: 1.75, y: 1},
+    M: {x: 2.75, y: 1},
+    N: {x: 3.75, y: 1},
+    O: {x: 4.75, y: 1},
+    P: {x: 5.75, y: 1},
+    Q: {x: 6.75, y: 1},
+    R: {x: 7.75, y: 1},
+    S: {x: 8.75, y: 1},
+    T: {x: 1.25, y: 2},
+    U: {x: 2.25, y: 2},
+    V: {x: 3.25, y: 2},
+    W: {x: 4.25, y: 2},
+    X: {x: 5.25, y: 2},
+    Y: {x: 6.25, y: 2},
+    Z: {x: 7.25, y: 2},
   },
 } as const;
 
@@ -186,32 +181,10 @@ export const getKeyboardLayout = (
   includeNumbers: boolean
 ): Record<string, Key> => {
   const baseLayout = keyboardLayouts[layout];
-  return includeNumbers ? { ...numberRow, ...baseLayout } : baseLayout;
+  return includeNumbers ? {...numberRow, ...baseLayout} : baseLayout;
 };
 
-export type CurveType =
-  | "linear"
-  | "catmull-rom"
-  | "quadratic-bezier"
-  | "cubic-bezier"
-  | "simple-curve";
-
-export enum StrokeStyle {
-  SOLID = "solid",
-  GRADIENT = "gradient",
-}
-
-export type StrokeConfig = {
-  style: StrokeStyle;
-  color: string;
-  gradientStart: string;
-  gradientEnd: string;
-  width: number;
-};
-
-export const generateLinearPath = (
-  points: { x: number; y: number }[]
-): string => {
+export const generateLinearPath = (points: Key[]): string => {
   if (points.length === 0) return "";
   let path = `M ${points[0].x} ${points[0].y}`;
   for (let i = 1; i < points.length; i++) {
@@ -220,9 +193,7 @@ export const generateLinearPath = (
   return path;
 };
 
-export const generateCatmullRomPath = (
-  points: { x: number; y: number }[]
-): string => {
+export const generateCatmullRomPath = (points: Key[]): string => {
   if (points.length < 2) return "";
   if (points.length === 2)
     return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
@@ -249,9 +220,7 @@ export const generateCatmullRomPath = (
   return path;
 };
 
-export const generateQuadraticBezierPath = (
-  points: { x: number; y: number }[]
-): string => {
+export const generateQuadraticBezierPath = (points: Key[]): string => {
   if (points.length < 2) return "";
   if (points.length === 2)
     return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
@@ -272,9 +241,7 @@ export const generateQuadraticBezierPath = (
   return path;
 };
 
-export const generateCubicBezierPath = (
-  points: { x: number; y: number }[]
-): string => {
+export const generateCubicBezierPath = (points: Key[]): string => {
   if (points.length < 2) return "";
   if (points.length === 2)
     return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
@@ -300,9 +267,7 @@ export const generateCubicBezierPath = (
   return path;
 };
 
-export const generateSimpleCurvePath = (
-  points: { x: number; y: number }[]
-): string => {
+export const generateSimpleCurvePath = (points: Key[]): string => {
   if (points.length < 2) return "";
   if (points.length === 2)
     return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
@@ -323,33 +288,24 @@ export const generateSimpleCurvePath = (
   return path;
 };
 
-export const generatePath = (
-  points: { x: number; y: number }[],
-  curveType: CurveType
-): string => {
-  switch (curveType) {
-    case "linear":
-      return generateLinearPath(points);
-    case "catmull-rom":
-      return generateCatmullRomPath(points);
-    case "quadratic-bezier":
-      return generateQuadraticBezierPath(points);
-    case "cubic-bezier":
-      return generateCubicBezierPath(points);
-    case "simple-curve":
-      return generateSimpleCurvePath(points);
-    default:
-      return generateLinearPath(points);
+export const generatePath = (points: Key[], curveType: CurveType): string => {
+  const pathData = {
+    'linear': generateLinearPath(points),
+    'catmull-rom': generateCatmullRomPath(points),
+    'quadratic-bezier': generateQuadraticBezierPath(points),
+    'cubic-bezier': generateCubicBezierPath(points),
+    'simple-curve': generateSimpleCurvePath(points),
   }
+  return pathData[curveType]
 };
 
 // Generate SVG gradient definitions
 export const generateSVGGradients = (strokeConfig: StrokeConfig): string => {
   if (strokeConfig.style === StrokeStyle.GRADIENT) {
     return `
-      <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:${strokeConfig.gradientStart};stop-opacity:1" />
-        <stop offset="100%" style="stop-color:${strokeConfig.gradientEnd};stop-opacity:1" />
+      <linearGradient id='pathGradient' x1='0%' y1='0%' x2='100%' y2='0%'>
+        <stop offset='0%' style='stop-color:${strokeConfig.gradientStart};stop-opacity:1' />
+        <stop offset='100%' style='stop-color:${strokeConfig.gradientEnd};stop-opacity:1' />
       </linearGradient>
     `;
   }
