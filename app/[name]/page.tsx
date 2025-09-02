@@ -59,7 +59,7 @@ export default async function SignaturePage({params}: SignaturePageProps) {
 
   return (
     <div
-      className='min-h-screen w-screen bg-neutral-950/50 flex flex-col items-center sm:justify-center p-4 max-sm:py-16'>
+      className='w-screen bg-neutral-950/50 flex flex-col items-center sm:justify-center p-4 max-sm:py-16'>
       <Link
         target='_blank'
         href={`https://github.com/${signature.claimed_by_username}`}
