@@ -82,9 +82,9 @@ export const keyboardLayouts: Record<KeyboardLayout, Record<string, Key>> = {
   },
 
   [KeyboardLayout.DVORAK]: {
-    ''': {x: 0.5, y: 0},
-    ',': {x: 1.5, y: 0},
-    '.': {x: 2.5, y: 0},
+    "'": {x: 0.5, y: 0},
+    ",": {x: 1.5, y: 0},
+    ".": {x: 2.5, y: 0},
     P: {x: 3.5, y: 0},
     Y: {x: 4.5, y: 0},
     F: {x: 5.5, y: 0},
