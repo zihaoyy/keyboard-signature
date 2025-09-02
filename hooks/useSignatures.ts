@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import {claimSignatureAction, getClaimedSignaturesAction, getSignatureByNameAction,} from '@/utils/actions';
-import {ClaimedSignature, StrokeConfig} from '@/types/signature';
+import {ClaimedSignature, CurveType, KeyboardLayout, StrokeConfig} from '@/types/signature';
 
 
 export const useSignatures = () => {
@@ -20,13 +20,15 @@ export const useSignatures = () => {
   }, []);
 
   const claimSignature = async (
+    userId: string,
+    username: string,
+    avatar: string | null,
     name: string,
     signaturePath: string,
     strokeConfig: StrokeConfig,
     includeNumbers: boolean,
-    userId: string,
-    username: string,
-    avatar: string | null
+    curveType: CurveType,
+    keyboardLayout: KeyboardLayout,
   ) => {
     try {
       const result = await claimSignatureAction({
@@ -34,6 +36,8 @@ export const useSignatures = () => {
         signaturePath,
         strokeConfig,
         includeNumbers,
+        curveType,
+        keyboardLayout,
       });
 
       if (!result.success) {
